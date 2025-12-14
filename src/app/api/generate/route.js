@@ -91,6 +91,10 @@ export async function POST(request) {
             length,
             includeAuthorityLink,
             generateImage: shouldGenerateImage,
+            // New parameters for Image Tab
+            generationType, // 'text' (default) or 'image'
+            imagePrompt,
+            imageFormat
         } = body;
 
         // Input validation
@@ -112,6 +116,33 @@ export async function POST(request) {
         log(`[API] Récupération du SERP pour le mot‑clé: ${keyword}`);
         const context = await fetchSerpResults(keyword, config.valueSerpApiKey);
         log('[API] Étape 1 – Analyse du contenu du scrap');
+
+        // Handle "Image Only" Generation
+        if (generationType === 'image') {
+            if (!config.seedreamApiKey) {
+                return NextResponse.json({ error: 'API Key Seedream manquante.' }, { status: 500 });
+            }
+
+            try {
+                console.log('[API] Generating image prompt with instructions...');
+                const prompt = await generateImagePrompt(keyword, context, config.anthropicApiKey, imagePrompt);
+
+                console.log(`[API] Generating image (${imageFormat})...`);
+                const generatedImageUrl = await generateImage(prompt, config.seedreamApiKey, imageFormat);
+
+                return NextResponse.json({
+                    imageUrl: generatedImageUrl,
+                    content: null, // No text content
+                    imageError: null
+                });
+
+            } catch (imgError) {
+                console.error('Erreur génération image (mode unique):', imgError);
+                return NextResponse.json({ error: imgError.message || 'Erreur génération image' }, { status: 500 });
+            }
+        }
+
+        // --- Standard Article Generation Flow (Text + Optional Image) ---
 
         // 2️⃣ Optional image generation
         let generatedImageUrl = '';

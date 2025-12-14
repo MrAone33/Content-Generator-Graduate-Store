@@ -1,7 +1,7 @@
 import { buildImageSystemPrompt, buildArticlePrompt, buildRewritePrompt } from '../prompts.js';
 
-export async function generateImagePrompt(keyword, context, apiKey) {
-    const promptSystem = buildImageSystemPrompt(keyword, context);
+export async function generateImagePrompt(keyword, context, apiKey, extraInstructions = '') {
+    const promptSystem = buildImageSystemPrompt(keyword, context, extraInstructions);
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
@@ -24,7 +24,12 @@ export async function generateImagePrompt(keyword, context, apiKey) {
     return data.content[0].text;
 }
 
-export async function generateImage(prompt, apiKey) {
+export async function generateImage(prompt, apiKey, format = 'landscape') {
+    // Map format to resolution
+    let size = "4096x2730"; // Default landscape
+    if (format === 'portrait') size = "2730x4096";
+    else if (format === 'square') size = "2048x2048";
+
     const response = await fetch("https://ark.ap-southeast.bytepluses.com/api/v3/images/generations", {
         method: "POST",
         headers: {
@@ -34,7 +39,7 @@ export async function generateImage(prompt, apiKey) {
         body: JSON.stringify({
             "model": "seedream-4-0-250828",
             "prompt": prompt,
-            "size": "4096x2730",
+            "size": size,
             "sequential_image_generation": "disabled",
             "response_format": "url",
             "stream": false,

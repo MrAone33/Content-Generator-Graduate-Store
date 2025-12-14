@@ -1,4 +1,14 @@
-export function buildImageSystemPrompt(keyword, context) {
+export function buildImageSystemPrompt(keyword, context, extraInstructions = '') {
+  // Variable replacement logic
+  let finalExtra = extraInstructions;
+  if (finalExtra && keyword) {
+    finalExtra = finalExtra.replace(/{keyword}/gi, keyword);
+  }
+
+  const extraSection = finalExtra
+    ? `\n#INSTRUCTIONS SUPPLÉMENTAIRES UTILISATEUR :\nIntègre OBLIGATOIREMENT ces éléments dans le brief visuel : "${finalExtra}".\n`
+    : '';
+
   return `
 #Rôle
 Tu es un ingénieur en prompt spécialisé dans la création de briefs de génération d’images documentaires de style smartphone.
@@ -9,6 +19,7 @@ Rédige le brief que je fournirai à l’IA de génération d’images pour prod
 #Informations Précises
 Sujet : ${keyword}
 Contexte supplémentaire : ${context.slice(0, 500)}... (Résumé contextuel)
+${extraSection}
 
 #Style Photo
 Photographie authentique prise en France avec un smartphone, qualité d’appareil photo iPhone avec ses imperfections naturelles. Esthétique brute et non retouchée de photographie mobile, cadrage légèrement imparfait, grain naturel, conditions d’éclairage authentiques. Sensation de prise en main à la volée avec un léger flou de bougé naturel, profondeur de champ réaliste d’un appareil mobile. Aucun éclairage ni composition professionnelle, style purement documentaire comme pris par quelqu’un avec son téléphone. Décor totalement spontané et réaliste. Le moment doit paraître totalement authentique et non scénarisé.

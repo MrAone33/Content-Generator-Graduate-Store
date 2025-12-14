@@ -12,7 +12,9 @@ export function useGenerator() {
         tone: 'expert',
         brief: '',
         generateImage: true,
-        includeAuthorityLink: false // Default false
+        includeAuthorityLink: false, // Default false
+        imagePrompt: '', // Supplemental prompt for image
+        imageFormat: 'landscape' // 'landscape', 'portrait', 'square'
     });
 
     const [settings, setSettings] = useState({
@@ -67,7 +69,7 @@ export function useGenerator() {
         router.push('/login');
     };
 
-    const handleGenerate = async () => {
+    const handleGenerate = async (activeTab = 'text') => {
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
         }
@@ -75,8 +77,15 @@ export function useGenerator() {
         const signal = abortControllerRef.current.signal;
 
         setIsGenerating(true);
-        setGeneratedContent(null);
-        setGeneratedImageUrl(null);
+        // Only reset content if we are regenerating that specific type, but for simplicity reset all for now or handle per-tab logic.
+        // If image tab, maybe we want to keep text content? Let's keep it simple and reset.
+        if (activeTab === 'text') {
+            setGeneratedContent(null);
+            setGeneratedImageUrl(null);
+        } else {
+            setGeneratedImageUrl(null);
+        }
+
         setErrorMsg(null);
         setLogs([]);
 
@@ -85,8 +94,13 @@ export function useGenerator() {
             addLog("Connexion à l'API sécurisée...", 'scrape', 'loading');
             addLog("Authentification en cours...", 'scrape', 'loading');
 
+            const payload = {
+                ...formData,
+                generationType: activeTab // 'text' or 'image'
+            };
+
             try {
-                const data = await generateContent(settings, formData, signal);
+                const data = await generateContent(settings, payload, signal);
 
                 addLog("Authentification réussie. Recherche et analyse en cours...", 'scrape', 'success');
                 addLog("Données reçues. Génération Claude en cours...", 'generate', 'loading');
