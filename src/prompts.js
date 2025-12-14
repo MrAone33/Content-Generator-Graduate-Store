@@ -71,3 +71,25 @@ ${authorityLinkInstruction}
 - Pas de balises \`\`\`html.
 `;
 }
+
+export function buildRewritePrompt(initialContent, length) {
+  return `
+Tu es un expert en réécriture éditoriale. Réécris le contenu HTML fourni pour le rendre plus naturel, fluide et engageant, tout en conservant la structure et les informations clés.
+
+## CONTENU À RÉÉCRIRE :
+${initialContent}
+
+## INSTRUCTIONS :
+- Maintiens la longueur cible : ${length}
+- Garde la structure HTML existante (h1, h2, p, ul, li, a, table).
+- Améliore la fluidité et le naturel des phrases.
+- Élimine les tournures typiques de l'IA.
+- Varie la longueur des phrases.
+- Conserve tous les liens existants.
+- Ne modifie pas le sens du contenu.
+
+## FORMAT DE SORTIE :
+- HTML pur (h1, h2, p, ul, li, table...).
+- Pas de balises \`\`\`html.
+`;
+}
