@@ -1,9 +1,22 @@
-import React, { useState } from 'react';
+'use client';
+
+import React, { useState, useMemo } from 'react';
 import { Globe, Code, FileText, ImageIcon, Copy, Download, Check } from 'lucide-react';
+import DOMPurify from 'isomorphic-dompurify';
 
 export default function ResultView({ generatedContent, generatedImageUrl, keyword }) {
     const [activeTab, setActiveTab] = useState('preview');
     const [copied, setCopied] = useState(false);
+
+    // Sanitize HTML to prevent XSS attacks
+    const sanitizedContent = useMemo(() => {
+        if (!generatedContent) return '';
+        return DOMPurify.sanitize(generatedContent, {
+            ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'p', 'ul', 'ol', 'li', 'a', 'strong', 'em', 'br', 'span', 'div', 'figure', 'figcaption', 'img'],
+            ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id'],
+            ALLOW_DATA_ATTR: false,
+        });
+    }, [generatedContent]);
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
@@ -96,7 +109,8 @@ export default function ResultView({ generatedContent, generatedImageUrl, keywor
                                 </figcaption>
                             </figure>
                         )}
-                        <div dangerouslySetInnerHTML={{ __html: generatedContent }} />
+                        {/* SECURITY: Using sanitized HTML to prevent XSS */}
+                        <div dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
                     </div>
                 )}
                 {activeTab === 'wp' && (
