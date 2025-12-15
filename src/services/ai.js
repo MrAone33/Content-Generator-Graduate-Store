@@ -15,6 +15,7 @@ export async function generateImagePrompt(keyword, context, apiKey, extraInstruc
             max_tokens: 300,
             messages: [{ role: "user", content: promptSystem }],
         }),
+        signal: AbortSignal.timeout(30000) // 30s timeout
     });
 
     const data = await response.json();
@@ -44,7 +45,8 @@ export async function generateImage(prompt, apiKey, format = 'landscape') {
             "response_format": "url",
             "stream": false,
             "watermark": false
-        })
+        }),
+        signal: AbortSignal.timeout(60000) // 60s timeout
     });
 
     if (!response.ok) {
@@ -77,6 +79,7 @@ export async function generateArticle({ keyword, tone, brief, url, anchor, conte
             max_tokens: 4000,
             messages: [{ role: "user", content: userPrompt }],
         }),
+        signal: AbortSignal.timeout(180000) // 3 mins timeout
     });
 
     const data = await response.json();
@@ -99,6 +102,7 @@ export async function rewriteContent(initialContent, length, apiKey) {
             max_tokens: 4000,
             messages: [{ role: "user", content: rewritePrompt }],
         }),
+        signal: AbortSignal.timeout(180000) // 3 mins timeout
     });
     const data = await response.json();
     if (data.error) {

@@ -18,7 +18,7 @@ Rédige le brief que je fournirai à l’IA de génération d’images pour prod
 
 #Informations Précises
 Sujet : ${keyword}
-Contexte supplémentaire : ${context.slice(0, 500)}... (Résumé contextuel)
+Contexte supplémentaire : ${(context || "").slice(0, 500)}... (Résumé contextuel)
 ${extraSection}
 
 #Style Photo

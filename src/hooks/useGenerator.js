@@ -91,8 +91,12 @@ export function useGenerator() {
 
         try {
             // ALWAYS PRODUCTION MODE LOGIC
-            addLog("Connexion à l'API sécurisée...", 'scrape', 'loading');
-            addLog("Authentification en cours...", 'scrape', 'loading');
+            // addLog("Connexion à l'API sécurisée...", 'scrape', 'loading'); // Removing verbose Logs
+            if (activeTab === 'text') {
+                addLog("Authentification et analyse SERP en cours...", 'scrape', 'loading');
+            } else {
+                addLog("Préparation de la génération d'image...", 'scrape', 'loading');
+            }
 
             const payload = {
                 ...formData,
@@ -102,7 +106,11 @@ export function useGenerator() {
             try {
                 const data = await generateContent(settings, payload, signal);
 
-                addLog("Authentification réussie. Recherche et analyse en cours...", 'scrape', 'success');
+                if (activeTab === 'text') {
+                    addLog("Analyse terminée. Rédaction Claude en cours...", 'scrape', 'success');
+                } else {
+                    addLog("Prompt généré. Création de l'image (Seedream)...", 'scrape', 'success');
+                }
                 addLog("Données reçues. Génération Claude en cours...", 'generate', 'loading');
 
                 setGeneratedContent(data.content);

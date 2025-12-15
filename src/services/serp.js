@@ -10,7 +10,9 @@ export async function fetchSerpResults(keyword, apiKey) {
         output: "json"
     });
 
-    const response = await fetch(`https://api.valueserp.com/search?${params}`);
+    const response = await fetch(`https://api.valueserp.com/search?${params}`, {
+        signal: AbortSignal.timeout(30000)
+    });
     const data = await response.json();
 
     if (!data.organic_results) {

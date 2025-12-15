@@ -112,10 +112,15 @@ export async function POST(request) {
             }
         }
 
-        // 1️⃣ Fetch SERP context
-        log(`[API] Récupération du SERP pour le mot‑clé: ${keyword}`);
-        const context = await fetchSerpResults(keyword, config.valueSerpApiKey);
-        log('[API] Étape 1 – Analyse du contenu du scrap');
+        // 1️⃣ Fetch SERP context (ONLY if not Image Only mode)
+        let context = "";
+        if (generationType !== 'image') {
+            log(`[API] Récupération du SERP pour le mot‑clé: ${keyword}`);
+            context = await fetchSerpResults(keyword, config.valueSerpApiKey);
+            log('[API] Étape 1 – Analyse du contenu du scrap');
+        } else {
+            log(`[API] Mode Image : Pas de scrap SERP.`);
+        }
 
         // Handle "Image Only" Generation
         if (generationType === 'image') {
