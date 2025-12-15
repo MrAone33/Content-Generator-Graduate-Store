@@ -1,7 +1,11 @@
 export async function generateContent(settings, formData, signal) {
     // if (!settings.workerUrl) throw new Error("URL du Worker manquante.");
     if (!settings.apiToken) throw new Error("Mot de passe API (Token) manquant.");
-    if (!formData.keyword) throw new Error("Le mot-clé principal est obligatoire.");
+
+    // Exception pour le mode Mockup : pas de mot-clé requis
+    if (!(formData.generationType === 'image' && formData.isMockup)) {
+        if (!formData.keyword) throw new Error("Le mot-clé principal est obligatoire.");
+    }
 
     // Préparation du payload avec rétro-compatibilité
     const payload = {

@@ -25,11 +25,27 @@ export async function generateImagePrompt(keyword, context, apiKey, extraInstruc
     return data.content[0].text;
 }
 
-export async function generateImage(prompt, apiKey, format = 'landscape') {
+export async function generateImage(prompt, apiKey, format = 'landscape', imageInputUrls = []) {
     // Map format to resolution
     let size = "4096x2730"; // Default landscape
     if (format === 'portrait') size = "2730x4096";
     else if (format === 'square') size = "2048x2048";
+
+    const requestBody = {
+        "model": "seedream-4-0-250828",
+        "prompt": prompt,
+        "sequential_image_generation": "disabled",
+        "response_format": "url",
+        "stream": false,
+        "watermark": false
+    };
+
+    if (imageInputUrls && imageInputUrls.length > 0) {
+        requestBody.image = imageInputUrls;
+        // Don't set size here to respect input ratio
+    } else {
+        requestBody.size = size;
+    }
 
     const response = await fetch("https://ark.ap-southeast.bytepluses.com/api/v3/images/generations", {
         method: "POST",
@@ -37,15 +53,7 @@ export async function generateImage(prompt, apiKey, format = 'landscape') {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${apiKey}`
         },
-        body: JSON.stringify({
-            "model": "seedream-4-0-250828",
-            "prompt": prompt,
-            "size": size,
-            "sequential_image_generation": "disabled",
-            "response_format": "url",
-            "stream": false,
-            "watermark": false
-        }),
+        body: JSON.stringify(requestBody),
         signal: AbortSignal.timeout(60000) // 60s timeout
     });
 

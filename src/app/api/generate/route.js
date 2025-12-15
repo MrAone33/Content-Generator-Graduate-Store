@@ -94,15 +94,19 @@ export async function POST(request) {
             // New parameters for Image Tab
             generationType, // 'text' (default) or 'image'
             imagePrompt,
-            imageFormat
+            imageFormat,
+            isMockup // Extract isMockup early for validation logic
         } = body;
 
         // Input validation
-        if (!keyword || typeof keyword !== 'string') {
-            return NextResponse.json({ error: 'Mot-clé manquant ou invalide' }, { status: 400 });
-        }
-        if (keyword.length > 200) {
-            return NextResponse.json({ error: 'Mot-clé trop long (max 200 caractères)' }, { status: 400 });
+        // Skip keyword validation for Mockup Image Generation
+        if (!(generationType === 'image' && isMockup)) {
+            if (!keyword || typeof keyword !== 'string') {
+                return NextResponse.json({ error: 'Mot-clé manquant ou invalide' }, { status: 400 });
+            }
+            if (keyword.length > 200) {
+                return NextResponse.json({ error: 'Mot-clé trop long (max 200 caractères)' }, { status: 400 });
+            }
         }
         if (url && typeof url === 'string' && url.length > 0) {
             try {
@@ -129,11 +133,37 @@ export async function POST(request) {
             }
 
             try {
-                console.log('[API] Generating image prompt with instructions...');
-                const prompt = await generateImagePrompt(keyword, context, config.anthropicApiKey, imagePrompt);
+                let prompt = "";
+                const {
+                    isMockup,
+                    mockupLocation,
+                    mockupSize,
+                    mockupAlignment,
+                    mockupBaseImageUrl,
+                    mockupLogoImageUrl
+                } = body;
+
+                let imageInputUrls = [];
+
+                if (isMockup) {
+                    // MOCKUP SPECIFIC PROMPT CONSTRUCTION
+                    console.log('[API] Generating MOCKUP prompt...');
+                    prompt = `Utilise Image 1 comme photo de base (verrouille tout : personnes, visage, cheveux, tenue, couleurs, arrière-plan, cadrage, netteté, grain, lumière — aucune altération). Utilise Image 2 comme logo maître et respecte-le à 100% pixel-perfect : mêmes proportions, formes, couleurs, contours, aucun redraw/interprétation/simplification, aucune recoloration, aucune retouche, aucune perte de détails. Seul traitement autorisé : détourage alpha propre si nécessaire, sans modifier le graphisme. Applique le logo sur le vêtement à ${mockupLocation || 'Cœur'} avec ${mockupSize || 'taille standard'}/${mockupAlignment || 'alignement naturel'}. Rendu sérigraphie ultra réaliste : le logo imprimé doit se caler précisément sur les plis et s’y adapter sans aucun décalage (warp 3D continu et exact qui suit chaque pli/creux/bosse, avec alignement stable sur la surface du tissu ; pas de glissement, pas d’offset entre le logo et les plis). Utilise une carte de déformation du tissu : le logo doit épouser la tension, les coutures et la perspective, avec occlusion légère dans les creux si nécessaire. Intégration physique : micro-texture fibres, légère irrégularité d’encre, opacité réaliste, ombres/reflets identiques à la scène. Zéro halo, zéro bord blanc, zéro effet sticker. Sortie : 1 image finale STRICTEMENT identique à Image 1 en format, ratio et dimensions pixels, sans redimensionnement, sans recadrage, sans marges, sans texte/watermark, et propre à 200% zoom.`;
+
+                    if (mockupBaseImageUrl) imageInputUrls.push(mockupBaseImageUrl);
+                    if (mockupLogoImageUrl) imageInputUrls.push(mockupLogoImageUrl);
+
+                    if (imageInputUrls.length < 2) {
+                        return NextResponse.json({ error: 'Pour un mockup, veuillez fournir l\'URL de l\'image de base ET celle du logo.' }, { status: 400 });
+                    }
+                } else {
+                    // STANDARD GENERATION
+                    console.log('[API] Generating standard image prompt with instructions...');
+                    prompt = await generateImagePrompt(keyword, context, config.anthropicApiKey, imagePrompt);
+                }
 
                 console.log(`[API] Generating image (${imageFormat})...`);
-                const generatedImageUrl = await generateImage(prompt, config.seedreamApiKey, imageFormat);
+                const generatedImageUrl = await generateImage(prompt, config.seedreamApiKey, imageFormat, imageInputUrls);
 
                 return NextResponse.json({
                     imageUrl: generatedImageUrl,

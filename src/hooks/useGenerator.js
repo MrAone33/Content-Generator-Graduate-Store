@@ -14,7 +14,15 @@ export function useGenerator() {
         generateImage: true,
         includeAuthorityLink: false, // Default false
         imagePrompt: '', // Supplemental prompt for image
-        imageFormat: 'landscape' // 'landscape', 'portrait', 'square'
+        imageFormat: 'landscape', // 'landscape', 'portrait', 'square'
+
+        // Mockup Generation Options
+        isMockup: false,
+        mockupBaseImage: null, // File object
+        mockupLogoImage: null, // File object
+        mockupLocation: '',
+        mockupSize: '',
+        mockupAlignment: ''
     });
 
     const [settings, setSettings] = useState({
@@ -102,6 +110,35 @@ export function useGenerator() {
                 ...formData,
                 generationType: activeTab // 'text' or 'image'
             };
+
+            // Handle File -> Base64 for Mockup
+            if (activeTab === 'image' && formData.isMockup) {
+                const fileToBase64 = (file) => {
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = error => reject(error);
+                    });
+                };
+
+                try {
+                    addLog("Conversion des images...", 'scrape', 'loading');
+                    if (formData.mockupBaseImage) {
+                        const base64Base = await fileToBase64(formData.mockupBaseImage);
+                        payload.mockupBaseImageUrl = base64Base; // Send as 'url' field for backend compat
+                    }
+                    if (formData.mockupLogoImage) {
+                        const base64Logo = await fileToBase64(formData.mockupLogoImage);
+                        payload.mockupLogoImageUrl = base64Logo; // Send as 'url' field for backend compat
+                    }
+                    // Remove file objects from payload to avoid serialization issues if any
+                    delete payload.mockupBaseImage;
+                    delete payload.mockupLogoImage;
+                } catch (encError) {
+                    throw new Error("Erreur lors de la lecture des fichiers images.");
+                }
+            }
 
             try {
                 const data = await generateContent(settings, payload, signal);

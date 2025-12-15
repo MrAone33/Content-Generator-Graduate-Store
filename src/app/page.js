@@ -68,8 +68,8 @@ export default function SeoGeneratorApp() {
                                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
                                     <h3 className="text-lg font-semibold text-gray-800">Paramètres Image</h3>
 
-                                    {/* Keyword Input (Shared) */}
-                                    <div>
+                                    {/* Keyword Input (Shared) - Disabled in Mockup mode */}
+                                    <div className={formData.isMockup ? 'opacity-50' : ''}>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Sujet / Mot-clé
                                         </label>
@@ -77,13 +77,14 @@ export default function SeoGeneratorApp() {
                                             type="text"
                                             value={formData.keyword}
                                             onChange={(e) => setFormData({ ...formData, keyword: e.target.value })}
-                                            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                            disabled={formData.isMockup}
+                                            className={`w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all ${formData.isMockup ? 'cursor-not-allowed bg-gray-100' : ''}`}
                                             placeholder="Ex: Un café à Paris..."
                                         />
                                     </div>
 
-                                    {/* Supplemental Prompt */}
-                                    <div>
+                                    {/* Supplemental Prompt - Disabled in Mockup mode */}
+                                    <div className={formData.isMockup ? 'opacity-50' : ''}>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Complément de prompt (Optionnel)
                                         </label>
@@ -91,13 +92,14 @@ export default function SeoGeneratorApp() {
                                         <textarea
                                             value={formData.imagePrompt}
                                             onChange={(e) => setFormData({ ...formData, imagePrompt: e.target.value })}
-                                            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all h-32 resize-none"
+                                            disabled={formData.isMockup}
+                                            className={`w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all h-32 resize-none ${formData.isMockup ? 'cursor-not-allowed bg-gray-100' : ''}`}
                                             placeholder="Ex: Style cyberpunk, {keyword} sous la pluie..."
                                         />
                                     </div>
 
-                                    {/* Format Selection */}
-                                    <div>
+                                    {/* Format Selection - Disabled in Mockup mode */}
+                                    <div className={formData.isMockup ? 'opacity-50' : ''}>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
                                             Format
                                         </label>
@@ -109,8 +111,9 @@ export default function SeoGeneratorApp() {
                                             ].map((format) => (
                                                 <button
                                                     key={format.id}
-                                                    onClick={() => setFormData({ ...formData, imageFormat: format.id })}
-                                                    className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all ${formData.imageFormat === format.id
+                                                    onClick={() => !formData.isMockup && setFormData({ ...formData, imageFormat: format.id })}
+                                                    disabled={formData.isMockup}
+                                                    className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all ${formData.isMockup ? 'cursor-not-allowed' : ''} ${formData.imageFormat === format.id
                                                         ? 'bg-blue-50 border-blue-200 text-blue-700'
                                                         : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
                                                         }`}
@@ -122,11 +125,121 @@ export default function SeoGeneratorApp() {
                                         </div>
                                     </div>
 
+                                    {/* Mockup Generation Option */}
+                                    <div className="pt-4 border-t border-gray-100">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <input
+                                                type="checkbox"
+                                                id="isMockup"
+                                                checked={formData.isMockup}
+                                                onChange={(e) => setFormData({ ...formData, isMockup: e.target.checked })}
+                                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                            />
+                                            <label htmlFor="isMockup" className="text-sm font-medium text-gray-800 cursor-pointer select-none">
+                                                Génération de Mockup
+                                            </label>
+                                        </div>
+
+                                        {formData.isMockup && (
+                                            <div className="space-y-4 pl-7 animate-in fade-in slide-in-from-top-2 duration-200">
+                                                {/* Base Image Upload */}
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                        Image de base (Vêtement/Objet)
+                                                    </label>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files[0];
+                                                            if (file) {
+                                                                setFormData(prev => ({ ...prev, mockupBaseImage: file }));
+                                                            }
+                                                        }}
+                                                        className="block w-full text-xs text-gray-500
+                                                            file:mr-4 file:py-2 file:px-4
+                                                            file:rounded-md file:border-0
+                                                            file:text-xs file:font-semibold
+                                                            file:bg-blue-50 file:text-blue-700
+                                                            hover:file:bg-blue-100
+                                                        "
+                                                    />
+                                                </div>
+
+                                                {/* Logo Upload */}
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                        Logo à appliquer
+                                                    </label>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files[0];
+                                                            if (file) {
+                                                                setFormData(prev => ({ ...prev, mockupLogoImage: file }));
+                                                            }
+                                                        }}
+                                                        className="block w-full text-xs text-gray-500
+                                                            file:mr-4 file:py-2 file:px-4
+                                                            file:rounded-md file:border-0
+                                                            file:text-xs file:font-semibold
+                                                            file:bg-purple-50 file:text-purple-700
+                                                            hover:file:bg-purple-100
+                                                        "
+                                                    />
+                                                </div>
+
+                                                {/* Mockup Parameters */}
+                                                <div className="grid grid-cols-1 gap-3">
+                                                    <div>
+                                                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                            Emplacement
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            value={formData.mockupLocation}
+                                                            onChange={(e) => setFormData({ ...formData, mockupLocation: e.target.value })}
+                                                            placeholder="Ex: Cœur, Dos, Manche..."
+                                                            className="w-full px-3 py-2 text-sm rounded-md border border-gray-200 focus:ring-1 focus:ring-blue-500 outline-none"
+                                                        />
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                        <div>
+                                                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                                Taille
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                value={formData.mockupSize}
+                                                                onChange={(e) => setFormData({ ...formData, mockupSize: e.target.value })}
+                                                                placeholder="Ex: 10cm, Large..."
+                                                                className="w-full px-3 py-2 text-sm rounded-md border border-gray-200 focus:ring-1 focus:ring-blue-500 outline-none"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                                Alignement
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                value={formData.mockupAlignment}
+                                                                onChange={(e) => setFormData({ ...formData, mockupAlignment: e.target.value })}
+                                                                placeholder="Ex: Centré, Haut..."
+                                                                className="w-full px-3 py-2 text-sm rounded-md border border-gray-200 focus:ring-1 focus:ring-blue-500 outline-none"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
                                     {/* Generate Button */}
                                     <button
                                         onClick={() => handleGenerate('image')}
-                                        disabled={isGenerating || !formData.keyword}
-                                        className={`w-full py-3 rounded-lg font-medium text-white transition-all shadow-md hover:shadow-lg ${isGenerating || !formData.keyword
+                                        disabled={isGenerating || (formData.isMockup ? (!formData.mockupBaseImage || !formData.mockupLogoImage) : !formData.keyword)}
+                                        className={`w-full py-3 rounded-lg font-medium text-white transition-all shadow-md hover:shadow-lg ${isGenerating || (formData.isMockup ? (!formData.mockupBaseImage || !formData.mockupLogoImage) : !formData.keyword)
                                             ? 'bg-gray-300 cursor-not-allowed'
                                             : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700'
                                             }`}
