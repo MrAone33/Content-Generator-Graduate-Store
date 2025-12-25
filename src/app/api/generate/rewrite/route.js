@@ -29,11 +29,11 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Contenu brouillon manquant' }, { status: 400 });
         }
 
-        console.log(`\n🔹 [REWRITE] Optimisation du contenu (${draftContent.length} chars)...`);
+        console.log(`\n🔹 [STEP 2/3 : REWRITE] Optimisation du contenu (${draftContent.length} chars)...`);
         console.time('text-rewrite');
         const finalContent = await rewriteContent(draftContent, length, config.anthropicApiKey);
         console.timeEnd('text-rewrite');
-        console.log(`✅ [REWRITE] Contenu final généré (${finalContent.length} chars).`);
+        console.log(`✅ [STEP 2/3 : REWRITE] Contenu final généré (${finalContent.length} chars).`);
 
         return NextResponse.json({
             content: finalContent

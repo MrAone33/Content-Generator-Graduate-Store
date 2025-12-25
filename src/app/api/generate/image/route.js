@@ -67,7 +67,7 @@ export async function POST(request) {
         let imageInputUrls = [];
 
         if (isMockup) {
-            console.log('\n🔹 [IMAGE] Génération PROMPT MOCKUP...');
+            console.log('\n🔹 [STEP 3/3 : IMAGE] Génération PROMPT MOCKUP...');
             prompt = `#Rôle
 Tu es un ingénieur en prompt spécialisé dans la création de briefs de génération d’images documentaires de style smartphone.
 
@@ -84,16 +84,16 @@ Qualité d’appareil photo numérique avec ses imperfections naturelles. Esthé
                 return NextResponse.json({ error: 'Mockup nécessite 2 images' }, { status: 400 });
             }
         } else {
-            console.log('\n🔹 [IMAGE] Génération Prompt Standard...');
+            console.log('\n🔹 [STEP 3/3 : IMAGE] Génération Prompt Standard...');
             // We pass empty string for context here to save time
             prompt = await generateImagePrompt(keyword, "", config.anthropicApiKey, imagePrompt);
         }
 
-        console.log(`✅ [IMAGE] Prompt généré. Envoi Seedream...`);
+        console.log(`✅ [STEP 3/3 : IMAGE] Prompt généré. Envoi Seedream...`);
         console.time('seedream-gen');
         const generatedImageUrl = await generateImage(prompt, config.seedreamApiKey, imageFormat, imageInputUrls);
         console.timeEnd('seedream-gen');
-        console.log(`✅ [IMAGE] Image URL: ${generatedImageUrl}`);
+        console.log(`✅ [STEP 3/3 : IMAGE] Image URL: ${generatedImageUrl}`);
 
         return NextResponse.json({
             imageUrl: generatedImageUrl

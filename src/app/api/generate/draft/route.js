@@ -45,26 +45,26 @@ export async function POST(request) {
 
         // 1️⃣ Fetch SERP context
         let context = "";
-        log(`\n🔹 [DRAFT] Récupération du SERP pour : "${keyword}"...`);
+        console.log(`\n🔹 [STEP 1/3 : DRAFT] Récupération du SERP pour : "${keyword}"...`);
         console.time('serp-fetch');
         try {
             context = await fetchSerpResults(keyword, config.valueSerpApiKey);
         } catch (e) {
             console.error("Erreur SERP (non bloquant):", e);
-            log("⚠️ Erreur SERP, continu sans contexte.");
+            console.log("⚠️ [STEP 1/3 : DRAFT] Erreur SERP, continu sans contexte.");
         }
         console.timeEnd('serp-fetch');
-        log(`✅ [DRAFT] SERP récupéré (Taille: ${context.length} chars)`);
+        console.log(`✅ [STEP 1/3 : DRAFT] SERP récupéré (Taille: ${context.length} chars)`);
 
         // 2️⃣ Generate First Draft
-        log('\n🔹 [DRAFT] Rédaction du brouillon (Claude)...');
+        console.log('\n🔹 [STEP 1/3 : DRAFT] Rédaction du brouillon (Claude)...');
         console.time('text-gen-1');
         const draftHtml = await generateArticle(
             { keyword, tone, brief, url, anchor, context, length, includeAuthorityLink },
             config.anthropicApiKey
         );
         console.timeEnd('text-gen-1');
-        log(`✅ [DRAFT] Brouillon généré (${draftHtml.length} chars).`);
+        console.log(`✅ [STEP 1/3 : DRAFT] Brouillon généré (${draftHtml.length} chars).`);
 
         return NextResponse.json({
             content: draftHtml,
