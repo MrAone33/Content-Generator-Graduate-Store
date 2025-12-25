@@ -30,6 +30,7 @@ export async function POST(request) {
         }
 
         console.log(`\n🔹 [STEP 2/3 : REWRITE] Optimisation du contenu (${draftContent.length} chars)...`);
+        console.log(`DEBUG LIENS: Anchor="${anchor}", URL="${url}"`);
         console.time('text-rewrite');
         const finalContent = await rewriteContent(
             { draftContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink },
