@@ -51,10 +51,9 @@ export function buildArticlePrompt({ keyword, tone, brief, url, anchor, context,
     ? `- Place le lien obligatoire de manière contextuelle.`
     : '';
 
-  return `
-Tu es un assistant IA expert en réécriture éditoriale avec une capacité à produire des textes naturels, fluides et crédibles.
+  return `Tu es un assistant spécialisé en veille éditoriale et en préparation de contenus SEO. Ta mission est d’extraire uniquement des informations vérifiables, pertinentes et réutilisables pour produire ensuite un article premium.
 
-Ecris l'article complet basé sur le contexte SERP ci-dessous.
+Tu dois travailler uniquement à partir du CONTEXTE SERP fourni. Interdiction totale d’inventer ou de déduire des informations non présentes dans la source.
 
 ## CONTEXTE SERP :
 ${context}
@@ -66,41 +65,105 @@ ${context}
 - Brief : ${brief}
 ${userLinkSection}
 
-## INSTRUCTIONS DE RÉDACTION : 
-- Titre H1 obligatoire au début.
-- Style d'écriture 6th grade, accessible.
-- Aère les paragraphes (max 3 lignes).
-- Intègre les infos du SERP naturellement.
-${userLinkInstruction}
-${authorityLinkInstruction}
-- Utilise des listes à puces et 1 tableau si pertinent.
-- Pas de phrases types IA ("En conclusion", "Il est important de...").
-- Varie la structure des phrases.
+## OBJECTIF DU BROUILLON :
+Lister des éléments factuels et utiles qui aideront à rédiger plus tard un article premium sur le mot-clé "${keyword}", en respectant l’intention de recherche et le brief.
+
+## CE QUE TU DOIS EXTRAIRE (UNIQUEMENT SI PRÉSENT DANS ${context}) :
+- Informations chiffrées ou monétaires (prix, coûts, fourchettes, économies, budgets…)
+- Statistiques / données mesurées (prévalence, parts, volumes, fréquences, taux…)
+- Faits précis et vérifiables (définitions, étapes, conditions, critères, délais, limites, normes, obligations…)
+- Points de comparaison (avantages / inconvénients, différences entre options, critères de choix…)
+- Exemples concrets (cas d’usage, situations typiques, erreurs fréquentes…)
+- Recommandations concrètes (bonnes pratiques, checklists, méthodes) — formulées avec “nous” si tu reformules un conseil
+- Marques, références de produits, modèles : uniquement si nécessaire et présents dans ${context}
+
+## RÈGLES STRICTES :
+- Interdiction d’inventer quoi que ce soit.
+- Ne liste que des informations réellement liées au sujet : mot-clé "${keyword}" + brief ${brief} + intention de recherche implicite.
+- N’écris pas l’article. Ne rédige pas de paragraphes : uniquement une liste d’éléments exploitables.
+- Ne cite jamais d’URL.
+- Ne cite jamais les noms d’auteurs.
+- Ne cite jamais les noms des sites sources.
+- Ne produis aucune citation (pas de “selon…”, pas de verbatim).
+- Si un élément est incertain, incomplet ou ambigu dans ${context}, ne le retiens pas.
+- Si ${context} ne contient pas d’information chiffrée/statistique utile, n’en invente pas : liste seulement ce qui existe.
 
 ## FORMAT DE SORTIE :
-- HTML pur (h1, h2, p, ul, li, table...).
-- Pas de balises \`\`\`html.
+- Français uniquement.
+- Liste à puces en HTML pur : <ul><li>…</li></ul>
+- Chaque puce doit être courte, actionnable, et réutilisable telle quelle lors de la rédaction.
+- Aucun autre texte avant ou après la liste.
 `;
 }
 
 export function buildRewritePrompt(initialContent, length) {
   return `
-Tu es un expert en réécriture éditoriale. Réécris le contenu HTML fourni pour le rendre plus naturel, fluide et engageant, tout en conservant la structure et les informations clés.
+Tu es un assistant IA expert en réécriture éditoriale. Tu produis des textes naturels, fluides et crédibles, sans jamais nuire à la rigueur de l’information.
+
+Ta mission : réécrire l’article complet en HTML pur, en respectant strictement les consignes ci-dessous. Tu ne dois jamais inventer d’informations : tout fait, chiffre, affirmation technique doit provenir du CONTENU À RÉÉCRIRE ou du brief.
 
 ## CONTENU À RÉÉCRIRE :
 ${initialContent}
 
-## INSTRUCTIONS :
-- Maintiens la longueur cible : ${length}
-- Garde la structure HTML existante (h1, h2, p, ul, li, a, table).
-- Améliore la fluidité et le naturel des phrases.
-- Élimine les tournures typiques de l'IA.
-- Varie la longueur des phrases.
-- Conserve tous les liens existants.
-- Ne modifie pas le sens du contenu.
+## INFOS UTILISATEUR :
+- Mot-clé : "${keyword}"
+- Ton : ${tone}
+- Longueur cible : ${length}
+- Brief : ${brief}
+${userLinkSection}
 
-## FORMAT DE SORTIE :
-- HTML pur (h1, h2, p, ul, li, table...).
-- Pas de balises \`\`\`html.
+## OBJECTIF ÉDITORIAL :
+- Répondre à l’intention de recherche liée au mot-clé "${keyword}".
+- Aider le lecteur à comprendre rapidement le sujet, avec des réponses concrètes et utiles.
+- Intégrer naturellement des informations issues du CONTEXTE SERP, sans surcharge de statistiques.
+
+## INSTRUCTIONS DE RÉDACTION (OBLIGATOIRES) :
+- Commence par un titre <h1> obligatoire au début.
+- Style 6th grade : simple, accessible, phrases claires.
+- Paragraphes aérés : maximum 3 lignes par paragraphe sur une page web classique (segmente si nécessaire).
+- Dans le tout 1er paragraphe : réponds immédiatement à la question principale derrière l’intention de recherche (réponse directe dès le début).
+- Intègre 1 à 2 occurrences du mot-clé "${keyword}" par section (au fil de l’article), aux endroits les plus naturels.
+- Ne mets en gras (<strong>) le mot-clé principal "${keyword}" que 3 fois maximum dans tout l’article.
+- Dans chaque paragraphe : 1 ou 2 segments en gras maximum (interdiction d’en faire plus). Le gras doit servir au scan : mots/expressions qui résument l’idée ou un chiffre vraiment utile.
+- Chiffres / stats : tu peux utiliser au maximum 1 pourcentage et 1 chiffre (non %) par section <h2>. Évite l’effet “rapport”, garde un style équilibré.
+- Nous sommes en France : utilise mètres, °C, unités européennes si nécessaire.
+- Typographie FR : mets toujours un espace avant “ ? ” et “ ! ”.
+- Ne cite jamais de noms d’auteurs.
+- Ne donne aucune citation (interdiction de citer un internaute / utilisateur / “selon X”, etc.).
+- Quand tu donnes un conseil, emploie le “nous” (ex : “nous conseillons…”). Tu peux donner des conseils précis, concrets, et nuancés, mais sans inventer de faits.
+
+## STRUCTURE & MISE EN FORME :
+- Utilise <h2> pour les sous-parties (autant que nécessaire, cohérent avec le sujet).
+- Ajoute des listes à puces uniquement quand c’est nécessaire (liste d’éléments, étapes, critères, etc.).
+- Ajoute 1 seul tableau maximum, et uniquement si pertinent (comparatif ou avantages/inconvénients). Interdiction d’en faire plus d’un.
+- Varie la structure des phrases (courtes/longues), évite un rythme mécanique.
+
+## CONSIGNES LIENS :
+Ajoute de manière naturelle dans une phrase contenu dans la premiere moitié du contenu, le lien suivnt en respactant l'ancre et l'url cible.
+${userLinkInstruction}
+${authorityLinkInstruction}
+
+## HUMANISATION (OBLIGATOIRE) :
+- Varie la syntaxe et le vocabulaire pour éviter les structures prévisibles.
+- Ajoute des imperfections humaines subtiles :
+  - Phrases de longueurs inégales (courtes, longues, mixtes)
+  - Détails contextuels occasionnels (sans digresser trop longtemps)
+- Utilise des connecteurs naturels et quelques expressions idiomatiques (avec parcimonie).
+- Évite les schémas reconnaissables par les détecteurs d’IA (répétitions, tournures génériques).
+
+### Expressions INTERDITES (ne jamais utiliser) :
+- Introductions : "Dans cet article", "Dans le contexte actuel", "Cet article vise à..."
+- Connecteurs : "En outre", "De plus", "Par ailleurs", "En effet", "Enfin"
+- Opposition : "Cependant", "Toutefois", "Néanmoins"
+- Conséquence : "Ainsi", "Par conséquent", "De ce fait"
+- Conclusions intermédiaires : "En somme", "En définitive", "Somme toute"
+- Insistance : "Il est important", "il est crucial", "il est essentiel", "il est primordial de", "Il convient de"
+- Phrases passe-partout : "Il apparaît clairement que", "On ne peut nier que", "Il est indéniable que"
+- Conclusion : "En conclusion", "En résumé", "Pour conclure", "Au final"
+
+## FORMAT DE SORTIE (STRICT) :
+- HTML pur uniquement : <h1>, <h2>, <p>, <ul>, <li>, <table>, <tr>, <td>, etc.
+- Aucune balise de code, aucun “\`\`\`html”, aucun Markdown.
+- Respecte la longueur cible : ${length}.
 `;
 }
