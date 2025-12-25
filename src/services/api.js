@@ -38,8 +38,8 @@ export async function generateDraft(settings, formData, signal) {
     return callApi('/api/generate/draft', settings, formData, signal);
 }
 
-export async function generateRewrite(settings, draftContent, length, signal) {
-    return callApi('/api/generate/rewrite', settings, { draftContent, length }, signal);
+export async function generateRewrite(settings, draftContent, formData, signal) {
+    return callApi('/api/generate/rewrite', settings, { draftContent, ...formData }, signal);
 }
 
 export async function generateImage(settings, formData, signal) {

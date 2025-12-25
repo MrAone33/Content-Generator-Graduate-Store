@@ -96,8 +96,8 @@ export async function generateArticle({ keyword, tone, brief, url, anchor, conte
     }
     return data.content[0].text;
 }
-export async function rewriteContent(initialContent, length, apiKey) {
-    const rewritePrompt = buildRewritePrompt(initialContent, length);
+export async function rewriteContent({ draftContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink }, apiKey) {
+    const rewritePrompt = buildRewritePrompt({ initialContent: draftContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink });
     const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {

@@ -96,7 +96,21 @@ Lister des éléments factuels et utiles qui aideront à rédiger plus tard un a
 `;
 }
 
-export function buildRewritePrompt(initialContent, length) {
+export function buildRewritePrompt({ initialContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink }) {
+  // Logic for Authority Link (Automatic) - Reused from article prompt
+  const authorityLinkInstruction = includeAuthorityLink
+    ? `- Trouve et intègre 1 lien externe pertinent vers une source d'autorité (Wikipedia, site gouvernemental, ou référence majeure du secteur) pour crédibiliser le contenu. Ne fais pas de lien vers un concurrent direct.`
+    : '';
+
+  // Logic for User Link (Mandatory if provided)
+  const userLinkSection = url && anchor
+    ? `- Lien obligatoire : <a href="${url}" target="_blank" rel="noopener">${anchor}</a>`
+    : '';
+
+  const userLinkInstruction = url && anchor
+    ? `- Place le lien obligatoire de manière contextuelle.`
+    : '';
+
   return `
 Tu es un assistant IA expert en réécriture éditoriale. Tu produis des textes naturels, fluides et crédibles, sans jamais nuire à la rigueur de l’information.
 

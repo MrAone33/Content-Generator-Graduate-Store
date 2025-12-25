@@ -23,7 +23,7 @@ export async function POST(request) {
         }
 
         const body = await request.json();
-        const { draftContent, length } = body;
+        const { draftContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink } = body;
 
         if (!draftContent) {
             return NextResponse.json({ error: 'Contenu brouillon manquant' }, { status: 400 });
@@ -31,7 +31,10 @@ export async function POST(request) {
 
         console.log(`\n🔹 [STEP 2/3 : REWRITE] Optimisation du contenu (${draftContent.length} chars)...`);
         console.time('text-rewrite');
-        const finalContent = await rewriteContent(draftContent, length, config.anthropicApiKey);
+        const finalContent = await rewriteContent(
+            { draftContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink },
+            config.anthropicApiKey
+        );
         console.timeEnd('text-rewrite');
         console.log(`✅ [STEP 2/3 : REWRITE] Contenu final généré (${finalContent.length} chars).`);
 
