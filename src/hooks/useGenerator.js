@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 // import { generateMockContent } from '../utils/simulation'; // Mock no longer used
-import { generateContent } from '../services/api';
+import { generateDraft, generateRewrite, generateImage } from '../services/api';
+import * as apiService from '../services/api'; // Use namespace for easier mocking/calling
 
 export function useGenerator() {
     const router = useRouter();
@@ -85,8 +86,10 @@ export function useGenerator() {
         const signal = abortControllerRef.current.signal;
 
         setIsGenerating(true);
-        // Only reset content if we are regenerating that specific type, but for simplicity reset all for now or handle per-tab logic.
-        // If image tab, maybe we want to keep text content? Let's keep it simple and reset.
+        setErrorMsg(null);
+        setLogs([]);
+
+        // Reset content based on tab
         if (activeTab === 'text') {
             setGeneratedContent(null);
             setGeneratedImageUrl(null);
@@ -94,24 +97,17 @@ export function useGenerator() {
             setGeneratedImageUrl(null);
         }
 
-        setErrorMsg(null);
-        setLogs([]);
-
         try {
-            // ALWAYS PRODUCTION MODE LOGIC
-            // addLog("Connexion à l'API sécurisée...", 'scrape', 'loading'); // Removing verbose Logs
-            if (activeTab === 'text') {
-                addLog("Authentification et analyse SERP en cours...", 'scrape', 'loading');
-            } else {
-                addLog("Préparation de la génération d'image...", 'scrape', 'loading');
-            }
-
+            // -- PREPARE PAYLOAD --
             const payload = {
                 ...formData,
-                generationType: activeTab // 'text' or 'image'
+                generationType: activeTab,
+                // Add anchor/url compat
+                anchor: formData.links[0]?.anchor || "",
+                url: formData.links[0]?.url || ""
             };
 
-            // Handle File -> Base64 for Mockup
+            // Image conversions (Base64) logic preserved
             if (activeTab === 'image' && formData.isMockup) {
                 const fileToBase64 = (file) => {
                     return new Promise((resolve, reject) => {
@@ -121,66 +117,74 @@ export function useGenerator() {
                         reader.onerror = error => reject(error);
                     });
                 };
-
                 try {
                     addLog("Conversion des images...", 'scrape', 'loading');
-                    if (formData.mockupBaseImage) {
-                        const base64Base = await fileToBase64(formData.mockupBaseImage);
-                        payload.mockupBaseImageUrl = base64Base; // Send as 'url' field for backend compat
-                    }
-                    if (formData.mockupLogoImage) {
-                        const base64Logo = await fileToBase64(formData.mockupLogoImage);
-                        payload.mockupLogoImageUrl = base64Logo; // Send as 'url' field for backend compat
-                    }
-                    // Remove file objects from payload to avoid serialization issues if any
+                    if (formData.mockupBaseImage) payload.mockupBaseImageUrl = await fileToBase64(formData.mockupBaseImage);
+                    if (formData.mockupLogoImage) payload.mockupLogoImageUrl = await fileToBase64(formData.mockupLogoImage);
                     delete payload.mockupBaseImage;
                     delete payload.mockupLogoImage;
                 } catch (encError) {
-                    throw new Error("Erreur lors de la lecture des fichiers images.");
+                    throw new Error("Erreur lecture images.");
                 }
             }
 
-            try {
-                const data = await generateContent(settings, payload, signal);
+            // -- NEW SEQUENTIAL FLOW --
 
-                if (activeTab === 'text') {
-                    addLog("Analyse terminée. Rédaction Claude en cours...", 'scrape', 'success');
-                } else {
-                    addLog("Prompt généré. Création de l'image (Seedream)...", 'scrape', 'success');
+            // 1. DRAFT (Text Only)
+            if (activeTab === 'text') {
+                addLog("1/3 Analyse SERP & Brouillon...", 'scrape', 'loading');
+                // Import the new functions. Note: we need to update imports in this file too!
+                // Assuming they are available via the import we will fix in next step.
+                // For now, let's assume `generateContent` is replaced or we import them.
+                // IMPORTANT: I need to update imports. So I will assume the imports are named:
+                // generateDraft, generateRewrite, generateImage
+
+                // Call Step 1
+                const draftData = await apiService.generateDraft(settings, payload, signal);
+                addLog("1/3 Brouillon terminés. Lancement Réécriture...", 'scrape', 'success');
+
+                // 2. REWRITE (Text Only)
+                addLog("2/3 Optimisation (Réécriture)...", 'generate', 'loading');
+                const rewriteData = await apiService.generateRewrite(settings, draftData.content, payload.length, signal);
+                setGeneratedContent(rewriteData.content);
+                addLog("2/3 Texte finalisé.", 'generate', 'success');
+
+                // 3. IMAGE (Optional)
+                if (payload.generateImage) {
+                    addLog("3/3 Génération Image...", 'format', 'loading');
+                    try {
+                        const imageData = await apiService.generateImage(settings, payload, signal);
+                        if (imageData.imageUrl) {
+                            setGeneratedImageUrl(imageData.imageUrl);
+                            addLog("3/3 Image créée.", 'format', 'success');
+                        }
+                    } catch (imgErr) {
+                        addLog("Erreur Image (non bloquant): " + imgErr.message, 'format', 'error');
+                    }
                 }
-                addLog("Données reçues. Génération Claude en cours...", 'generate', 'loading');
 
-                setGeneratedContent(data.content);
-                if (data.imageUrl) setGeneratedImageUrl(data.imageUrl);
-                if (data.imageError) addLog("Info: " + data.imageError, 'generate', 'error');
+                addLog("Terminé avec succès !", 'format', 'success');
 
-                addLog("Contenu généré et reçu avec succès.", 'generate', 'success');
-                addLog("Formatage terminé.", 'format', 'success');
-            } catch (apiError) {
-                if (apiError.message.includes("401") || apiError.message.includes("403")) {
-                    // Clean token if invalid
-                    localStorage.removeItem('api_token');
-                    router.push('/login');
-                    throw new Error("Session expirée, veuillez vous reconnecter.");
-                }
-                throw apiError;
+            } else {
+                // IMAGE ONLY MODE
+                addLog("Génération Image seule...", 'scrape', 'loading');
+                const imageData = await apiService.generateImage(settings, payload, signal);
+                setGeneratedImageUrl(imageData.imageUrl);
+                addLog("Image générée.", 'scrape', 'success');
             }
 
         } catch (err) {
             if (err.name === 'AbortError') {
                 console.log("Fetch aborted");
+                addLog("Annulé par l'utilisateur.", 'generate', 'error');
             } else {
-                console.error("Erreur détaillée:", err);
-                if (err.cause) console.error("Cause:", err.cause);
-                if (err.stack) console.error("Stack:", err.stack);
-
+                console.error("Erreur hook:", err);
                 let userMessage = err.message;
-                if (err.message === 'Failed to fetch' || err.message.includes('NetworkError')) {
-                    userMessage = "Erreur de connexion au serveur. Si vous êtes en local, vérifiez 'npm run dev'. Si vous êtes en ligne, vérifiez que le serveur n'a pas crashé (timeout).";
+                if (userMessage === 'Failed to fetch') {
+                    userMessage = "Problème de connexion (possible timeout).";
                 }
-
-                setErrorMsg(userMessage || "Une erreur inconnue est survenue");
-                addLog(`Erreur: ${userMessage} `, 'generate', 'error');
+                setErrorMsg(userMessage);
+                addLog(`Erreur: ${userMessage}`, 'generate', 'error');
             }
         } finally {
             if (!abortControllerRef.current?.signal.aborted) {

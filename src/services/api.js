@@ -1,25 +1,12 @@
-export async function generateContent(settings, formData, signal) {
-    // if (!settings.workerUrl) throw new Error("URL du Worker manquante.");
-    if (!settings.apiToken) throw new Error("Mot de passe API (Token) manquant.");
+const TIMEOUT_ERROR_MSG = "Le serveur n'a pas répondu à temps (Timeout).";
 
-    // Exception pour le mode Mockup : pas de mot-clé requis
-    if (!(formData.generationType === 'image' && formData.isMockup)) {
-        if (!formData.keyword) throw new Error("Le mot-clé principal est obligatoire.");
-    }
+async function callApi(endpoint, settings, payload, signal) {
+    if (!settings.apiToken) throw new Error("Token API manquant.");
 
-    // Préparation du payload avec rétro-compatibilité
-    const payload = {
-        ...formData,
-        // On envoie le premier lien comme anchor/url pour compatibilité avec l'ancien backend
-        // Note: Le nouveau backend gère le payload complet, mais on garde ces champs au cas où
-        anchor: formData.links[0]?.anchor || "",
-        url: formData.links[0]?.url || ""
-    };
+    // Adapt payload for specific processing if needed
+    // ...
 
-    // URL interne (Next.js API Route)
-    const apiUrl = '/api/generate';
-
-    const response = await fetch(apiUrl, {
+    const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -30,7 +17,7 @@ export async function generateContent(settings, formData, signal) {
     });
 
     if (response.status === 401 || response.status === 403) {
-        throw new Error("Authentification refusée : Vérifiez votre mot de passe API.");
+        throw new Error("Authentification refusée : Token invalide.");
     }
 
     if (!response.ok) {
@@ -38,15 +25,28 @@ export async function generateContent(settings, formData, signal) {
         try {
             const errorData = await response.json();
             if (errorData.error) errorDetails = errorData.error;
-        } catch (e) {
-            // keep statusText
-        }
-        throw new Error(`Erreur serveur (${response.status}): ${errorDetails || 'Aucun détail disponible'}`);
+        } catch (e) { }
+        throw new Error(`Erreur serveur (${response.status}): ${errorDetails}`);
     }
 
     const data = await response.json();
-
     if (data.error) throw new Error(data.error);
-
     return data;
+}
+
+export async function generateDraft(settings, formData, signal) {
+    return callApi('/api/generate/draft', settings, formData, signal);
+}
+
+export async function generateRewrite(settings, draftContent, length, signal) {
+    return callApi('/api/generate/rewrite', settings, { draftContent, length }, signal);
+}
+
+export async function generateImage(settings, formData, signal) {
+    return callApi('/api/generate/image', settings, formData, signal);
+}
+
+// Deprecated: Monolithic call (kept if we need fallback)
+export async function generateContent(settings, formData, signal) {
+    return callApi('/api/generate', settings, formData, signal);
 }
