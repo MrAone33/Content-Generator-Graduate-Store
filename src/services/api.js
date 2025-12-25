@@ -39,8 +39,10 @@ export async function generateDraft(settings, formData, signal) {
 }
 
 export async function generateRewrite(settings, draftContent, formData, signal) {
-    console.log("[DEBUG API SERVICE] generateRewrite formData:", formData);
-    return callApi('/api/generate/rewrite', settings, { draftContent, ...formData }, signal);
+    console.log("[DEBUG API SERVICE] generateRewrite formData:", JSON.stringify(formData));
+    // Explicitly merge to ensure no property is lost
+    const fullPayload = Object.assign({}, formData, { draftContent });
+    return callApi('/api/generate/rewrite', settings, fullPayload, signal);
 }
 
 export async function generateImage(settings, formData, signal) {
