@@ -170,11 +170,13 @@ export function useGenerator() {
             if (err.name === 'AbortError') {
                 console.log("Fetch aborted");
             } else {
-                console.error(err);
+                console.error("Erreur détaillée:", err);
+                if (err.cause) console.error("Cause:", err.cause);
+                if (err.stack) console.error("Stack:", err.stack);
 
                 let userMessage = err.message;
                 if (err.message === 'Failed to fetch' || err.message.includes('NetworkError')) {
-                    userMessage = "Le serveur semble éteint ou inaccessible. Vérifiez que 'npm run dev' est bien lancé dans le terminal.";
+                    userMessage = "Erreur de connexion au serveur. Si vous êtes en local, vérifiez 'npm run dev'. Si vous êtes en ligne, vérifiez que le serveur n'a pas crashé (timeout).";
                 }
 
                 setErrorMsg(userMessage || "Une erreur inconnue est survenue");

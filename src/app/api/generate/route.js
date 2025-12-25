@@ -30,6 +30,11 @@ function checkRateLimit(ip) {
     return true;
 }
 
+
+// Configure longer timeout for Vercel (default is 10s or 15s)
+export const maxDuration = 60; // Set to 60s (max for Hobby/Pro default). 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/generate
  * Handles content generation: SERP fetch, optional image generation, article generation, and article rewrite.
