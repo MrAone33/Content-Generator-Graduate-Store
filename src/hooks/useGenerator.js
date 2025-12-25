@@ -132,45 +132,39 @@ export function useGenerator() {
 
             // 1. DRAFT (Text Only)
             if (activeTab === 'text') {
-                addLog("1/3 Analyse SERP & Brouillon...", 'scrape', 'loading');
-                // Import the new functions. Note: we need to update imports in this file too!
-                // Assuming they are available via the import we will fix in next step.
-                // For now, let's assume `generateContent` is replaced or we import them.
-                // IMPORTANT: I need to update imports. So I will assume the imports are named:
-                // generateDraft, generateRewrite, generateImage
+                addLog("Phase 1/3 : Analyse du sujet et structuration...", 'scrape', 'loading');
 
-                // Call Step 1
                 const draftData = await apiService.generateDraft(settings, payload, signal);
-                addLog("1/3 Brouillon terminés. Lancement Réécriture...", 'scrape', 'success');
+                addLog("Structure établie. Démarrage de la rédaction...", 'scrape', 'success');
 
                 // 2. REWRITE (Text Only)
-                addLog("2/3 Optimisation (Réécriture)...", 'generate', 'loading');
+                addLog("Phase 2/3 : Rédaction et optimisation sémantique...", 'generate', 'loading');
                 const rewriteData = await apiService.generateRewrite(settings, draftData.content, payload.length, signal);
                 setGeneratedContent(rewriteData.content);
-                addLog("2/3 Texte finalisé.", 'generate', 'success');
+                addLog("Contenu finalisé et optimisé.", 'generate', 'success');
 
                 // 3. IMAGE (Optional)
                 if (payload.generateImage) {
-                    addLog("3/3 Génération Image...", 'format', 'loading');
+                    addLog("Phase 3/3 : Création du visuel d'illustration...", 'format', 'loading');
                     try {
                         const imageData = await apiService.generateImage(settings, payload, signal);
                         if (imageData.imageUrl) {
                             setGeneratedImageUrl(imageData.imageUrl);
-                            addLog("3/3 Image créée.", 'format', 'success');
+                            addLog("Visuel généré avec succès.", 'format', 'success');
                         }
                     } catch (imgErr) {
-                        addLog("Erreur Image (non bloquant): " + imgErr.message, 'format', 'error');
+                        addLog("Info : Image non générée (" + imgErr.message + ")", 'format', 'error');
                     }
                 }
 
-                addLog("Terminé avec succès !", 'format', 'success');
+                addLog("Génération terminée !", 'format', 'success');
 
             } else {
                 // IMAGE ONLY MODE
-                addLog("Génération Image seule...", 'scrape', 'loading');
+                addLog("Analyse de la demande visuelle...", 'scrape', 'loading');
                 const imageData = await apiService.generateImage(settings, payload, signal);
                 setGeneratedImageUrl(imageData.imageUrl);
-                addLog("Image générée.", 'scrape', 'success');
+                addLog("Visuel créé.", 'scrape', 'success');
             }
 
         } catch (err) {
