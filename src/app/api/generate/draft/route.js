@@ -24,6 +24,7 @@ export async function POST(request) {
             accessToken: process.env.ACCESS_TOKEN,
             valueSerpApiKey: process.env.VALUESERP_API_KEY,
             anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+            diffbotApiKey: process.env.DIFFBOT_API_KEY,
         };
 
         // Authenticate
@@ -48,7 +49,7 @@ export async function POST(request) {
         console.log(`\n🔹 [STEP 1/3 : DRAFT] Récupération du SERP pour : "${keyword}"...`);
         console.time('serp-fetch');
         try {
-            context = await fetchSerpResults(keyword, config.valueSerpApiKey);
+            context = await fetchSerpResults(keyword, config.valueSerpApiKey, config.diffbotApiKey);
         } catch (e) {
             console.error("Erreur SERP (non bloquant):", e);
             console.log("⚠️ [STEP 1/3 : DRAFT] Erreur SERP, continu sans contexte.");
