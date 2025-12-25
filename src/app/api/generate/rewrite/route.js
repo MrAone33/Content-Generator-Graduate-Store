@@ -23,6 +23,8 @@ export async function POST(request) {
         }
 
         const body = await request.json();
+        console.log("DEBUG REWRITE BODY KEYS:", Object.keys(body)); // Verify keys
+        console.log("DEBUG REWRITE BODY ANCHOR:", body.anchor); // Verify specific value
         const { draftContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink } = body;
 
         if (!draftContent) {
