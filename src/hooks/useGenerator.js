@@ -171,8 +171,14 @@ export function useGenerator() {
                 console.log("Fetch aborted");
             } else {
                 console.error(err);
-                setErrorMsg(err.message || "Une erreur inconnue est survenue");
-                addLog(`Erreur: ${err.message} `, 'generate', 'error');
+
+                let userMessage = err.message;
+                if (err.message === 'Failed to fetch' || err.message.includes('NetworkError')) {
+                    userMessage = "Le serveur semble éteint ou inaccessible. Vérifiez que 'npm run dev' est bien lancé dans le terminal.";
+                }
+
+                setErrorMsg(userMessage || "Une erreur inconnue est survenue");
+                addLog(`Erreur: ${userMessage} `, 'generate', 'error');
             }
         } finally {
             if (!abortControllerRef.current?.signal.aborted) {
