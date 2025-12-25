@@ -139,6 +139,7 @@ export function useGenerator() {
 
                 // 2. REWRITE (Text Only)
                 addLog("Phase 2/3 : Rédaction et optimisation sémantique...", 'generate', 'loading');
+                console.log("[DEBUG CLIENT] Payload sent to Rewrite:", payload); // DEBUG
                 const rewriteData = await apiService.generateRewrite(settings, draftData.content, payload, signal);
                 setGeneratedContent(rewriteData.content);
                 addLog("Contenu finalisé et optimisé.", 'generate', 'success');

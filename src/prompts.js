@@ -104,11 +104,11 @@ export function buildRewritePrompt({ initialContent, length, keyword, tone, brie
 
   // Logic for User Link (Mandatory if provided)
   const userLinkSection = url && anchor
-    ? `- Lien obligatoire : <a href="${url}" target="_blank" rel="noopener">${anchor}</a>`
+    ? `\n## CONTRAINTE SEO PRIORITAIRE (OBLIGATOIRE) :\n- Tu DOIS INCLURE ce lien dans le corps du texte : <a href="${url}" target="_blank" rel="noopener">${anchor}</a>.\n- C'est une exigence non négociable du client.`
     : '';
 
   const userLinkInstruction = url && anchor
-    ? `- Place le lien obligatoire de manière contextuelle.`
+    ? `- [CRITIQUE] Intègre le lien "${anchor}" (${url}) de manière fluide mais OBLIGATOIRE.`
     : '';
 
   return `
@@ -145,6 +145,7 @@ ${userLinkSection}
 - Ne cite jamais de noms d’auteurs.
 - Ne donne aucune citation (interdiction de citer un internaute / utilisateur / “selon X”, etc.).
 - Quand tu donnes un conseil, emploie le “nous” (ex : “nous conseillons…”). Tu peux donner des conseils précis, concrets, et nuancés, mais sans inventer de faits.
+- **IMPORTANT**: Si un lien obligatoire est fourni ci-dessus, il DOIT apparaître dans le HTML final.
 
 ## STRUCTURE & MISE EN FORME :
 - Utilise <h2> pour les sous-parties (autant que nécessaire, cohérent avec le sujet).
@@ -153,7 +154,7 @@ ${userLinkSection}
 - Varie la structure des phrases (courtes/longues), évite un rythme mécanique.
 
 ## CONSIGNES LIENS :
-Ajoute de manière naturelle dans une phrase contenu dans la premiere moitié du contenu, le lien suivnt en respactant l'ancre et l'url cible.
+Ajoute de manière naturelle dans une phrase contenu dans la premiere moitié du contenu, le lien suivant en respectant l'ancre et l'url cible.
 ${userLinkInstruction}
 ${authorityLinkInstruction}
 
