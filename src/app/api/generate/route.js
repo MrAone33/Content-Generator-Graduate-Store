@@ -124,15 +124,18 @@ export async function POST(request) {
         // 1️⃣ Fetch SERP context (ONLY if not Image Only mode)
         let context = "";
         if (generationType !== 'image') {
-            log(`[API] Récupération du SERP pour le mot‑clé: ${keyword}`);
+            log(`\n🔹 [ÉTAPE 1/5] Récupération du SERP pour : "${keyword}"...`);
+            console.time('serp-fetch');
             context = await fetchSerpResults(keyword, config.valueSerpApiKey);
-            log('[API] Étape 1 – Analyse du contenu du scrap');
+            console.timeEnd('serp-fetch');
+            log(`✅ [ÉTAPE 1/5] SERP récupéré (Taille contexte: ${context.length} chars)`);
         } else {
-            log(`[API] Mode Image : Pas de scrap SERP.`);
+            log(`⏩ [ÉTAPE 1/5] Mode Image : Pas de scrap SERP.`);
         }
 
         // Handle "Image Only" Generation
         if (generationType === 'image') {
+            log(`\n🔹 [MODE IMAGE] Démarrage génération image seule...`);
             if (!config.seedreamApiKey) {
                 return NextResponse.json({ error: 'API Key Seedream manquante.' }, { status: 500 });
             }
@@ -152,7 +155,7 @@ export async function POST(request) {
 
                 if (isMockup) {
                     // MOCKUP SPECIFIC PROMPT CONSTRUCTION
-                    console.log('[API] Generating MOCKUP prompt...');
+                    log('[API] Génération du prompt MOCKUP...');
                     prompt = `#Rôle
 Tu es un ingénieur en prompt spécialisé dans la création de briefs de génération d’images documentaires de style smartphone.
 
@@ -170,12 +173,17 @@ Qualité d’appareil photo numérique avec ses imperfections naturelles. Esthé
                     }
                 } else {
                     // STANDARD GENERATION
-                    console.log('[API] Generating standard image prompt with instructions...');
+                    log('🎨 [IMAGE] Génération du prompt pour image standard...');
                     prompt = await generateImagePrompt(keyword, context, config.anthropicApiKey, imagePrompt);
+                    log(`✅ [IMAGE] Prompt généré: ${prompt.substring(0, 50)}...`);
                 }
 
-                console.log(`[API] Generating image (${imageFormat})...`);
+                log(`🎨 [IMAGE] Envoi requête Seedream (${imageFormat})...`);
+                console.time('seedream-gen');
                 const generatedImageUrl = await generateImage(prompt, config.seedreamApiKey, imageFormat, imageInputUrls);
+                console.timeEnd('seedream-gen');
+
+                log(`✅ [IMAGE] Image générée avec succès : ${generatedImageUrl}`);
 
                 return NextResponse.json({
                     imageUrl: generatedImageUrl,
@@ -184,7 +192,7 @@ Qualité d’appareil photo numérique avec ses imperfections naturelles. Esthé
                 });
 
             } catch (imgError) {
-                console.error('Erreur génération image (mode unique):', imgError);
+                console.error('❌ [ERREUR IMAGE]', imgError);
                 return NextResponse.json({ error: imgError.message || 'Erreur génération image' }, { status: 500 });
             }
         }
@@ -196,36 +204,51 @@ Qualité d’appareil photo numérique avec ses imperfections naturelles. Esthé
         let imageGenerationError = null;
         if (config.seedreamApiKey && shouldGenerateImage) {
             try {
-                console.log('[API] Generating image prompt...');
+                log('\n🔹 [ÉTAPE 2/5] Préparation Image...');
+                log('🎨 Génération du prompt image...');
                 const prompt = await generateImagePrompt(keyword, context, config.anthropicApiKey);
-                console.log('[API] Generating image...');
+                log('🎨 Génération de l\'image (Seedream)...');
+                console.time('image-gen-std');
                 generatedImageUrl = await generateImage(prompt, config.seedreamApiKey);
+                console.timeEnd('image-gen-std');
+                log(`✅ [ÉTAPE 2/5] Image OK : ${generatedImageUrl}`);
             } catch (imgError) {
-                console.error('Erreur génération image:', imgError);
+                console.error('⚠️ Erreur génération image (non bloquant):', imgError);
                 imageGenerationError = imgError.message;
             }
+        } else {
+            log('\n⏩ [ÉTAPE 2/5] Image sautée (non demandée ou clé manquante).');
         }
 
         // 3️⃣ First article generation
-        console.log('[API] Étape 2 – Génération du contenu...');
+        log('\n🔹 [ÉTAPE 3/5] Rédaction du contenu (Claude)...');
+        log(`📝 Paramètres: Tone=${tone}, Length=${length}`);
+        console.time('text-gen-1');
         const firstHtml = await generateArticle(
             { keyword, tone, brief, url, anchor, context, length, includeAuthorityLink },
             config.anthropicApiKey
         );
+        console.timeEnd('text-gen-1');
+        log(`✅ [ÉTAPE 3/5] Premier brouillon généré (${firstHtml.length} chars).`);
 
         // 4️⃣ Rewrite step (second pass)
-        console.log('[API] Étape 3 – Réécriture du contenu...');
+        log('\n🔹 [ÉTAPE 4/5] Optimisation & Réécriture...');
         let rewrittenHtml = '';
         let rewriteError = null;
         try {
+            console.time('text-rewrite');
             rewrittenHtml = await rewriteContent(firstHtml, length, config.anthropicApiKey);
+            console.timeEnd('text-rewrite');
+            log(`✅ [ÉTAPE 4/5] Contenu final optimisé (${rewrittenHtml.length} chars).`);
         } catch (err) {
-            console.error('Erreur lors de la réécriture de l\'article:', err);
+            console.error('❌ Erreur réécriture:', err);
             rewriteError = err.message;
             rewrittenHtml = firstHtml; // fallback to original content
+            log('⚠️ Fallback sur le premier brouillon.');
         }
 
         // 5️⃣ Respond to client
+        log('\n🎉 [ÉTAPE 5/5] Terminée ! Envoi de la réponse au client.');
         return NextResponse.json({
             content: rewrittenHtml,
             imageUrl: generatedImageUrl,
@@ -233,7 +256,7 @@ Qualité d’appareil photo numérique avec ses imperfections naturelles. Esthé
             rewriteError: rewriteError,
         });
     } catch (error) {
-        console.error('API Error:', error);
+        console.error('❌ [API ERROR FATAL]:', error);
         return NextResponse.json({ error: error.message || 'Erreur interne serveur' }, { status: 500 });
     }
 }
