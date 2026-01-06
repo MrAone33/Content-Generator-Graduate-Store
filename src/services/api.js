@@ -38,10 +38,17 @@ export async function generateDraft(settings, formData, signal) {
     return callApi('/api/generate/draft', settings, formData, signal);
 }
 
-export async function generateRewrite(settings, draftContent, formData, signal) {
-    console.log("[DEBUG API SERVICE] generateRewrite formData:", JSON.stringify(formData));
-    // Explicitly merge to ensure no property is lost
-    const fullPayload = Object.assign({}, formData, { draftContent });
+export async function generateRewrite(settings, draftContent, formDataOrLength, signal) {
+    // Defensive coding: check if 3rd arg is object or length string
+    let fullPayload = {};
+    if (typeof formDataOrLength === 'object') {
+        console.log("[DEBUG API SERVICE] generateRewrite received OBJECT:", JSON.stringify(formDataOrLength));
+        fullPayload = Object.assign({}, formDataOrLength, { draftContent });
+    } else {
+        console.warn("[DEBUG API SERVICE] generateRewrite received LEGACY ARG (length string):", formDataOrLength);
+        fullPayload = { draftContent, length: formDataOrLength };
+    }
+
     return callApi('/api/generate/rewrite', settings, fullPayload, signal);
 }
 

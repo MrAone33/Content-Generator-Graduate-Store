@@ -60,14 +60,32 @@ export default function ResultView({ generatedContent, generatedImageUrl, keywor
                     </button>
 
                     {generatedImageUrl && (
-                        <a
-                            href={generatedImageUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <button
+                            onClick={() => {
+                                // Create filename from keyword or default
+                                const filename = keyword
+                                    ? keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '.png'
+                                    : 'image-generee.png';
+
+                                fetch(generatedImageUrl)
+                                    .then(response => response.blob())
+                                    .then(blob => {
+                                        const url = window.URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.style.display = 'none';
+                                        a.href = url;
+                                        a.download = filename;
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        window.URL.revokeObjectURL(url);
+                                        document.body.removeChild(a);
+                                    })
+                                    .catch(err => console.error('Erreur téléchargement image:', err));
+                            }}
                             className="px-3 py-1.5 rounded text-xs font-medium flex items-center gap-1.5 text-[--color-text-secondary] hover:bg-gray-50"
                         >
                             <ImageIcon className="w-3.5 h-3.5" /> Image
-                        </a>
+                        </button>
                     )}
                 </div>
 
