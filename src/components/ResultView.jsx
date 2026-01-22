@@ -68,7 +68,10 @@ export default function ResultView({ generatedContent, generatedImageUrl, keywor
                                     : 'image-generee.png';
 
                                 fetch(generatedImageUrl)
-                                    .then(response => response.blob())
+                                    .then(response => {
+                                        if (!response.ok) throw new Error('Network response was not ok');
+                                        return response.blob();
+                                    })
                                     .then(blob => {
                                         const url = window.URL.createObjectURL(blob);
                                         const a = document.createElement('a');
@@ -80,7 +83,11 @@ export default function ResultView({ generatedContent, generatedImageUrl, keywor
                                         window.URL.revokeObjectURL(url);
                                         document.body.removeChild(a);
                                     })
-                                    .catch(err => console.error('Erreur téléchargement image:', err));
+                                    .catch(err => {
+                                        console.error('Erreur téléchargement image:', err);
+                                        // Fallback: Si le téléchargement direct échoue (ex: CORS), ouvrir dans un nouvel onglet
+                                        window.open(generatedImageUrl, '_blank');
+                                    });
                             }}
                             className="px-3 py-1.5 rounded text-xs font-medium flex items-center gap-1.5 text-[--color-text-secondary] hover:bg-gray-50"
                         >
@@ -97,7 +104,25 @@ export default function ResultView({ generatedContent, generatedImageUrl, keywor
                         {copied ? <Check className="w-3.5 h-3.5 text-[--color-success]" /> : <Copy className="w-3.5 h-3.5" />}
                         {copied ? 'Copié!' : 'Copier'}
                     </button>
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 btn-primary text-xs">
+                    <button
+                        onClick={() => {
+                            const filename = keyword
+                                ? keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '.html'
+                                : 'article-genere.html';
+
+                            const blob = new Blob([generatedContent], { type: 'text/html' });
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.style.display = 'none';
+                            a.href = url;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                            document.body.removeChild(a);
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 btn-primary text-xs"
+                    >
                         <Download className="w-3.5 h-3.5" /> Exporter
                     </button>
                 </div>
