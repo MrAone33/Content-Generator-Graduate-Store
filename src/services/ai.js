@@ -32,7 +32,7 @@ export async function generateImage(prompt, apiKey, format = 'landscape', imageI
     else if (format === 'square') size = "2048x2048";
 
     const requestBody = {
-        "model": "seedream-4-0-250828",
+        "model": "seedream-4-5-251128",
         "prompt": prompt,
         "sequential_image_generation": "disabled",
         "response_format": "url",
