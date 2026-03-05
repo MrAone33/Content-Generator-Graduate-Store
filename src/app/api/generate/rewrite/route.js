@@ -25,7 +25,7 @@ export async function POST(request) {
         const body = await request.json();
         console.log("DEBUG REWRITE BODY KEYS:", Object.keys(body)); // Verify keys
         console.log("DEBUG REWRITE BODY ANCHOR:", body.anchor); // Verify specific value
-        const { draftContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink, contentType } = body;
+        const { draftContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink, contentType, language } = body;
 
         if (!draftContent) {
             return NextResponse.json({ error: 'Contenu brouillon manquant' }, { status: 400 });
@@ -35,7 +35,7 @@ export async function POST(request) {
         console.log(`DEBUG LIENS: Anchor="${anchor}", URL="${url}"`);
         console.time('text-rewrite');
         const finalContent = await rewriteContent(
-            { draftContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink, contentType },
+            { draftContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink, contentType, language },
             config.anthropicApiKey
         );
         console.timeEnd('text-rewrite');

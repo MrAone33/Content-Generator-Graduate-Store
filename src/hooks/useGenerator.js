@@ -8,6 +8,7 @@ export function useGenerator() {
     const router = useRouter();
     const [formData, setFormData] = useState({
         keyword: '',
+        language: 'fr',
         contentType: 'cocon',
         length: '800 mots',
         links: [{ anchor: '', url: '' }],
