@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Image, Settings, LayoutDashboard } from 'lucide-react';
+import { FileText, Image, Settings } from 'lucide-react';
 
 export default function Sidebar({ activeTab, setActiveTab }) {
     const menuItems = [
@@ -16,11 +16,6 @@ export default function Sidebar({ activeTab, setActiveTab }) {
 
             {/* Main Navigation */}
             <div className="px-4 py-6 flex-1 overflow-y-auto custom-scrollbar">
-                <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#767676] hover:text-black mb-8 transition-colors text-left group">
-                    <LayoutDashboard className="w-4 h-4 text-[#767676] group-hover:text-black transition-colors" />
-                    Tableau de bord
-                </button>
-
                 <div className="space-y-6">
                     <div>
                         <h3 className="px-4 text-[11px] font-semibold text-[#767676] uppercase tracking-widest mb-2">
