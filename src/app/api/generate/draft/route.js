@@ -38,7 +38,7 @@ export async function POST(request) {
         }
 
         const body = await request.json();
-        const { keyword, anchor, url, tone, brief, length, includeAuthorityLink } = body;
+        const { keyword, anchor, url, tone, brief, length, includeAuthorityLink, contentType } = body;
 
         if (!keyword) {
             return NextResponse.json({ error: 'Mot-clé manquant' }, { status: 400 });
@@ -61,7 +61,7 @@ export async function POST(request) {
         console.log('\n🔹 [STEP 1/3 : DRAFT] Rédaction du brouillon (Claude)...');
         console.time('text-gen-1');
         const draftHtml = await generateArticle(
-            { keyword, tone, brief, url, anchor, context, length, includeAuthorityLink },
+            { keyword, tone, brief, url, anchor, context, length, includeAuthorityLink, contentType },
             config.anthropicApiKey
         );
         console.timeEnd('text-gen-1');

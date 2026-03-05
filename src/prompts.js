@@ -36,7 +36,40 @@ Le résultat sera uniquement le prompt, sans aucune autre information, sans aucu
   `;
 }
 
-export function buildArticlePrompt({ keyword, tone, brief, url, anchor, context, length, includeAuthorityLink }) {
+function getContentTypeGuidelines(contentType) {
+  const guidelines = {
+    cocon: `## GUIDELINES TYPE DE CONTENU : ARTICLE COCON SÉMANTIQUE
+But : capter une intention précise et devenir la référence sur le sujet.
+- Utilité immédiate : l'article doit résoudre une question/problème ou définir un concept complet en un minimum de friction.
+- Angle unique : un enfant de cocon existe parce qu'il traite un sous-sujet mieux que la page parent (plus concret, plus actionnable, plus spécifique).
+- Profondeur ciblée : pas "longueur", mais complétude sur le besoin (les étapes/critères/erreurs qui débloquent la décision).
+- Curation Graduate : même en contenu info, garder un ADN "sélection / conseils d'usage / style" plutôt qu'un article encyclopédique.
+- Pont naturel vers l'achat : on ne "vend" pas, on oriente ("si vous cherchez X, voyez Y"). La conversion vient par cohérence. On reste très premium.`,
+
+    categorie: `## GUIDELINES TYPE DE CONTENU : PAGE CATÉGORIE E-COMMERCE
+But : ranker transactionnel + faire choisir vite + protéger l'UX de browsing.
+- Shopping-first, SEO-second (mais pas SEO-none) : le texte n'a pas le droit de ralentir la navigation. Le SEO sert l'achat, pas l'inverse.
+- Aide au choix avant discours : une bonne catégorie répond à "comment je choisis ?" (critères, usages, niveaux, styles) plus qu'à "qu'est-ce que c'est ?".
+- Segmentation intelligente : penser la catégorie comme une carte (univers / usages / silhouettes / budgets / matières), pas comme une liste de produits.
+- Réassurance sobre : uniquement ce qui réduit un frein (livraison/retours/tailles/authenticité) sans pavé marketing.
+- Anti-duplicate par conception : la différence vient des critères et des segments, pas d'adjectifs. Chaque catégorie doit avoir un contenu réellement distinctif.
+- Le texte doit être compact, scannable, et orienté action.`,
+
+    marque: `## GUIDELINES TYPE DE CONTENU : PAGE MARQUE E-COMMERCE
+But : capter la demande "marque" + devenir un hub qui distribue vers catégories/collections + rassurer.
+- Répondre à la "brand intent" : l'utilisateur veut savoir "est-ce la bonne marque pour moi ?" et "où trouver les bons produits ?".
+- Univers + utilité : combiner identité (style, ADN) + repères concrets (fits, usages, "comment ça se porte", entretien si pertinent).
+- Factualité stricte : pas de storytelling non sourcé, pas de promesses floues. La crédibilité = SEO + conversion.
+- Curation Graduate : exprimer "ce qu'on choisit chez eux" (sans forcément lister tout). L'avantage Graduate, c'est la sélection.
+- Hub de parcours : c'est un carrefour vers les catégories/collections pertinentes et vers les contenus d'aide (taille, entretien, authentification, style).
+- Chaque marque doit avoir des éléments réellement distinctifs (sinon footprint + pages faibles).
+- Gestion du risque SEO : certaines marques génèrent des requêtes "avis / authentique / taille" → répondre proprement.`
+  };
+
+  return guidelines[contentType] || guidelines.cocon;
+}
+
+export function buildArticlePrompt({ keyword, tone, brief, url, anchor, context, length, includeAuthorityLink, contentType }) {
   // Logic for Authority Link (Automatic)
   const authorityLinkInstruction = includeAuthorityLink
     ? `- Trouve et intègre 1 lien externe pertinent vers une source d'autorité (Wikipedia, site gouvernemental, ou référence majeure du secteur) pour crédibiliser le contenu. Ne fais pas de lien vers un concurrent direct.`
@@ -60,6 +93,8 @@ Graduate parle comme une boutique curatrice premium qui conseille avec précisio
 - Voix : vouvoiement systématique, “nous” = Graduate, “vous” = le client.
 - Valoriser : sélection, qualité, détails, finitions, matières, durabilité, polyvalence.
 - Lexique signature : “sélection”, “pièces”, “labels”, “vestiaire”, “allure”, “silhouette”, “intemporel”, “finitions”, “matières”, “polyvalent”, “durable”, “fonctionnel”.
+
+${getContentTypeGuidelines(contentType)}
 
 ## CONTEXTE SERP :
 ${context}
@@ -103,7 +138,7 @@ Lister des éléments factuels et utiles qui aideront à rédiger plus tard un a
 `;
 }
 
-export function buildRewritePrompt({ initialContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink }) {
+export function buildRewritePrompt({ initialContent, length, keyword, tone, brief, url, anchor, includeAuthorityLink, contentType }) {
   // Logic for Authority Link (Automatic) - Reused from article prompt
   const authorityLinkInstruction = includeAuthorityLink
     ? `- Trouve et intègre 1 lien externe pertinent vers une source d'autorité (Wikipedia, site gouvernemental, ou référence majeure du secteur) pour crédibiliser le contenu. Ne fais pas de lien vers un concurrent direct.`
@@ -157,6 +192,8 @@ Graduate parle comme une boutique curatrice premium qui conseille avec précisio
 ### Niveau de confiance :
 - Factuel → affirmation nette et simple.
 - Variable (style, taille, usage) → “selon”, “en général”, “souvent”, “si”.
+
+${getContentTypeGuidelines(contentType)}
 
 ## CONTENU À RÉÉCRIRE :
 ${initialContent}

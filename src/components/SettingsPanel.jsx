@@ -18,6 +18,31 @@ export default function SettingsPanel({
             </div>
 
             <div className="p-5 space-y-4">
+                {/* Content Type */}
+                <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide">
+                        Type de contenu
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                        {[
+                            { id: 'cocon', label: 'Article Cocon' },
+                            { id: 'categorie', label: 'Catégorie Ecom' },
+                            { id: 'marque', label: 'Marque Ecom' },
+                        ].map((type) => (
+                            <button
+                                key={type.id}
+                                onClick={() => setFormData({ ...formData, contentType: type.id })}
+                                className={`px-3 py-2 text-xs font-semibold transition-all uppercase tracking-wide border ${formData.contentType === type.id
+                                    ? 'bg-black border-black text-white'
+                                    : 'bg-white border-[#E5E5E5] text-[#767676] hover:bg-[#F5F5F5]'
+                                    }`}
+                            >
+                                {type.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
                 {/* Keyword */}
                 <div className="space-y-1.5">
                     <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide">
