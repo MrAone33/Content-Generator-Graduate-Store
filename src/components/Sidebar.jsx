@@ -52,7 +52,7 @@ export default function Sidebar({ activeTab, setActiveTab }) {
                     Paramètres
                 </button>
                 <div className="mt-4 px-4 text-[10px] text-[#999] font-medium tracking-wide uppercase">
-                    Graduate Store<br />v1.0.2
+                    Edited by Arthur Comets<br />v1.0.0
                 </div>
             </div>
         </aside>
