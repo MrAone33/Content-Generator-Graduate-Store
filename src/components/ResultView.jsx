@@ -39,22 +39,22 @@ export default function ResultView({ generatedContent, generatedImageUrl, keywor
         <div className="card flex flex-col flex-grow overflow-hidden">
             {/* Toolbar */}
             <div className="border-b border-[#E5E5E5] px-4 py-2 bg-[#F5F5F5] flex flex-wrap items-center justify-between gap-2">
-                <div className="flex bg-white border border-[#E5E5E5] p-0.5">
+                <div className="flex bg-white border border-[#E5E5E5] p-0.5 rounded-sm">
                     <button
                         onClick={() => setActiveTab('preview')}
-                        className={`px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1.5 uppercase tracking-wide ${activeTab === 'preview' ? 'bg-black text-white' : 'text-[#767676] hover:bg-[#F5F5F5]'}`}
+                        className={`px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1.5 uppercase tracking-wide rounded-sm ${activeTab === 'preview' ? 'bg-black text-white' : 'text-[#767676] hover:bg-[#F5F5F5]'}`}
                     >
                         <Globe className="w-3.5 h-3.5" /> Visuel
                     </button>
                     <button
                         onClick={() => setActiveTab('wp')}
-                        className={`px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1.5 uppercase tracking-wide ${activeTab === 'wp' ? 'bg-black text-white' : 'text-[#767676] hover:bg-[#F5F5F5]'}`}
+                        className={`px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1.5 uppercase tracking-wide rounded-sm ${activeTab === 'wp' ? 'bg-black text-white' : 'text-[#767676] hover:bg-[#F5F5F5]'}`}
                     >
                         <FileText className="w-3.5 h-3.5" /> WordPress
                     </button>
                     <button
                         onClick={() => setActiveTab('html')}
-                        className={`px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1.5 uppercase tracking-wide ${activeTab === 'html' ? 'bg-black text-white' : 'text-[#767676] hover:bg-[#F5F5F5]'}`}
+                        className={`px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1.5 uppercase tracking-wide rounded-sm ${activeTab === 'html' ? 'bg-black text-white' : 'text-[#767676] hover:bg-[#F5F5F5]'}`}
                     >
                         <Code className="w-3.5 h-3.5" /> HTML
                     </button>
@@ -97,7 +97,7 @@ export default function ResultView({ generatedContent, generatedImageUrl, keywor
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => copyToClipboard(generatedContent)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E5E5E5] hover:bg-[#F5F5F5] text-[#767676] text-xs font-medium transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E5E5E5] hover:bg-[#F5F5F5] text-[#767676] text-xs font-medium transition-colors rounded-sm"
                     >
                         {copied ? <Check className="w-3.5 h-3.5 text-black" /> : <Copy className="w-3.5 h-3.5" />}
                         {copied ? 'Copié!' : 'Copier'}
@@ -119,7 +119,7 @@ export default function ResultView({ generatedContent, generatedImageUrl, keywor
                             window.URL.revokeObjectURL(url);
                             document.body.removeChild(a);
                         }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-black text-white text-xs font-semibold uppercase tracking-wide hover:bg-[#333] transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-black text-white text-xs font-semibold uppercase tracking-wide hover:bg-[#333] transition-colors rounded-sm"
                     >
                         <Download className="w-3.5 h-3.5" /> Exporter
                     </button>

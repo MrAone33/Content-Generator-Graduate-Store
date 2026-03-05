@@ -19,7 +19,7 @@ export default function Header({ activeTab, handleLogout }) {
                 <div className="flex items-center gap-4">
                     <button
                         onClick={handleLogout}
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-black text-white hover:bg-[#333] transition-all uppercase tracking-wider"
+                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-black text-white hover:bg-[#333] transition-all uppercase tracking-wider rounded-sm"
                     >
                         <LogOut className="w-4 h-4" />
                         Déconnexion

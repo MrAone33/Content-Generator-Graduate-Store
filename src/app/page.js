@@ -65,7 +65,7 @@ export default function SeoGeneratorApp() {
                         <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10">
                             {/* LEFT COLUMN: Input Form */}
                             <div className="lg:col-span-4 space-y-6">
-                                <div className="bg-white p-6 border border-[#E5E5E5] space-y-6">
+                                <div className="bg-white p-6 border border-[#E5E5E5] space-y-6 rounded">
                                     <h3 className="text-lg font-semibold text-black uppercase tracking-wide">Paramètres Image</h3>
 
                                     {/* Keyword Input */}
@@ -78,7 +78,7 @@ export default function SeoGeneratorApp() {
                                             value={formData.keyword}
                                             onChange={(e) => setFormData({ ...formData, keyword: e.target.value })}
                                             disabled={formData.isMockup}
-                                            className={`w-full px-4 py-2 border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all ${formData.isMockup ? 'cursor-not-allowed bg-[#F5F5F5]' : ''}`}
+                                            className={`w-full px-4 py-2 border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all rounded-sm ${formData.isMockup ? 'cursor-not-allowed bg-[#F5F5F5]' : ''}`}
                                             placeholder="Ex: Un café à Paris..."
                                         />
                                     </div>
@@ -93,7 +93,7 @@ export default function SeoGeneratorApp() {
                                             value={formData.imagePrompt}
                                             onChange={(e) => setFormData({ ...formData, imagePrompt: e.target.value })}
                                             disabled={formData.isMockup}
-                                            className={`w-full px-4 py-2 border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all h-32 resize-none ${formData.isMockup ? 'cursor-not-allowed bg-[#F5F5F5]' : ''}`}
+                                            className={`w-full px-4 py-2 border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all h-32 resize-none rounded-sm ${formData.isMockup ? 'cursor-not-allowed bg-[#F5F5F5]' : ''}`}
                                             placeholder="Ex: Style cyberpunk, {keyword} sous la pluie..."
                                         />
                                     </div>
@@ -113,7 +113,7 @@ export default function SeoGeneratorApp() {
                                                     key={format.id}
                                                     onClick={() => !formData.isMockup && setFormData({ ...formData, imageFormat: format.id })}
                                                     disabled={formData.isMockup}
-                                                    className={`px-3 py-2 border text-sm font-medium transition-all ${formData.isMockup ? 'cursor-not-allowed' : ''} ${formData.imageFormat === format.id
+                                                    className={`px-3 py-2 border text-sm font-medium transition-all rounded-sm ${formData.isMockup ? 'cursor-not-allowed' : ''} ${formData.imageFormat === format.id
                                                         ? 'bg-black border-black text-white'
                                                         : 'bg-white border-[#E5E5E5] text-[#767676] hover:bg-[#F5F5F5]'
                                                         }`}
@@ -198,7 +198,7 @@ export default function SeoGeneratorApp() {
                                                             value={formData.mockupLocation}
                                                             onChange={(e) => setFormData({ ...formData, mockupLocation: e.target.value })}
                                                             placeholder="Ex: Cœur, Dos, Manche..."
-                                                            className="w-full px-3 py-2 text-sm border border-[#E5E5E5] focus:ring-1 focus:ring-black outline-none"
+                                                            className="w-full px-3 py-2 text-sm border border-[#E5E5E5] focus:ring-1 focus:ring-black outline-none rounded-sm"
                                                         />
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-3">
@@ -211,7 +211,7 @@ export default function SeoGeneratorApp() {
                                                                 value={formData.mockupSize}
                                                                 onChange={(e) => setFormData({ ...formData, mockupSize: e.target.value })}
                                                                 placeholder="Ex: 10cm, Large..."
-                                                                className="w-full px-3 py-2 text-sm border border-[#E5E5E5] focus:ring-1 focus:ring-black outline-none"
+                                                                className="w-full px-3 py-2 text-sm border border-[#E5E5E5] focus:ring-1 focus:ring-black outline-none rounded-sm"
                                                             />
                                                         </div>
                                                         <div>
@@ -223,7 +223,7 @@ export default function SeoGeneratorApp() {
                                                                 value={formData.mockupAlignment}
                                                                 onChange={(e) => setFormData({ ...formData, mockupAlignment: e.target.value })}
                                                                 placeholder="Ex: Centré, Haut..."
-                                                                className="w-full px-3 py-2 text-sm border border-[#E5E5E5] focus:ring-1 focus:ring-black outline-none"
+                                                                className="w-full px-3 py-2 text-sm border border-[#E5E5E5] focus:ring-1 focus:ring-black outline-none rounded-sm"
                                                             />
                                                         </div>
                                                     </div>
@@ -236,7 +236,7 @@ export default function SeoGeneratorApp() {
                                     <button
                                         onClick={() => handleGenerate('image')}
                                         disabled={isGenerating || (formData.isMockup ? (!formData.mockupBaseImage || !formData.mockupLogoImage) : !formData.keyword)}
-                                        className={`w-full py-3 font-semibold text-white transition-all uppercase tracking-wider ${isGenerating || (formData.isMockup ? (!formData.mockupBaseImage || !formData.mockupLogoImage) : !formData.keyword)
+                                        className={`w-full py-3 font-semibold text-white transition-all uppercase tracking-wider rounded-sm ${isGenerating || (formData.isMockup ? (!formData.mockupBaseImage || !formData.mockupLogoImage) : !formData.keyword)
                                             ? 'bg-[#E5E5E5] text-[#999] cursor-not-allowed'
                                             : 'bg-black hover:bg-[#333]'
                                             }`}
@@ -260,7 +260,7 @@ export default function SeoGeneratorApp() {
                             {/* RIGHT COLUMN: Output */}
                             <div className="lg:col-span-8 flex flex-col h-full min-h-[600px]">
                                 {generatedImageUrl ? (
-                                    <div className="bg-white border border-[#E5E5E5] overflow-hidden h-fit">
+                                    <div className="bg-white border border-[#E5E5E5] overflow-hidden h-fit rounded">
                                         <div className="p-4 border-b border-[#E5E5E5] flex justify-between items-center bg-[#F5F5F5]">
                                             <h3 className="font-semibold text-black uppercase tracking-wide">Résultat</h3>
                                             <a
@@ -281,7 +281,7 @@ export default function SeoGeneratorApp() {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="flex-1 bg-white border border-dashed border-[#E5E5E5] flex items-center justify-center text-[#767676]">
+                                    <div className="flex-1 bg-white border border-dashed border-[#E5E5E5] flex items-center justify-center text-[#767676] rounded">
                                         <div className="text-center">
                                             <span className="text-4xl block mb-2 opacity-30">&#9634;</span>
                                             <p className="text-sm">L'image générée apparaîtra ici</p>

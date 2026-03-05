@@ -14,7 +14,7 @@ export default function TerminalLogs({ logs, errorMsg }) {
     }, [logs]);
 
     return (
-        <div className="bg-[#0a0a0a] border border-[#222] overflow-hidden text-[#767676] text-xs font-mono">
+        <div className="bg-[#0a0a0a] border border-[#222] overflow-hidden text-[#767676] text-xs font-mono rounded">
             <div className="px-4 py-2 bg-[#111] border-b border-[#222] flex justify-between items-center">
                 <span className="text-[#767676] uppercase tracking-wider text-[10px] font-semibold">Terminal</span>
                 <div className="flex gap-1.5">
@@ -28,7 +28,7 @@ export default function TerminalLogs({ logs, errorMsg }) {
                 className="p-4 h-44 overflow-y-auto space-y-2 custom-scrollbar"
             >
                 {errorMsg && (
-                    <div className="flex items-start gap-2 text-[#FF0000] bg-[#FF0000]/10 p-2">
+                    <div className="flex items-start gap-2 text-[#FF0000] bg-[#FF0000]/10 p-2 rounded-sm">
                         <AlertCircle className="w-3 h-3 mt-0.5" />
                         <span>ERREUR : {errorMsg}</span>
                     </div>

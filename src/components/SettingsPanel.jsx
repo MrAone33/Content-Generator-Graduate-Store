@@ -27,7 +27,7 @@ export default function SettingsPanel({
                         <select
                             value={formData.contentType}
                             onChange={(e) => setFormData({ ...formData, contentType: e.target.value })}
-                            className="w-full px-3 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none text-sm appearance-none cursor-pointer"
+                            className="w-full px-3 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none text-sm appearance-none cursor-pointer rounded-sm"
                         >
                             <option value="cocon">Article Cocon</option>
                             <option value="categorie">Catégorie Ecom</option>
@@ -48,7 +48,7 @@ export default function SettingsPanel({
                             type="text"
                             value={formData.keyword}
                             onChange={(e) => setFormData({ ...formData, keyword: e.target.value })}
-                            className="w-full pl-9 pr-4 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none text-sm"
+                            className="w-full pl-9 pr-4 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none text-sm rounded-sm"
                             placeholder="Ex: formation seo"
                         />
                     </div>
@@ -67,7 +67,7 @@ export default function SettingsPanel({
                             id="includeAuthorityLink"
                             checked={formData.includeAuthorityLink}
                             onChange={(e) => setFormData({ ...formData, includeAuthorityLink: e.target.checked })}
-                            className="peer h-4 w-4 cursor-pointer appearance-none border border-[#E5E5E5] bg-white checked:bg-black checked:border-black transition-all"
+                            className="peer h-4 w-4 cursor-pointer appearance-none border border-[#E5E5E5] bg-white checked:bg-black checked:border-black transition-all rounded-[3px]"
                         />
                         <Check className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100" />
                     </div>
@@ -84,7 +84,7 @@ export default function SettingsPanel({
                             <select
                                 value={formData.tone}
                                 onChange={(e) => setFormData({ ...formData, tone: e.target.value })}
-                                className="w-full px-3 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none text-sm appearance-none cursor-pointer"
+                                className="w-full px-3 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none text-sm appearance-none cursor-pointer rounded-sm"
                             >
                                 <option value="graduate">Graduate (Auto)</option>
                                 <option value="expert">Expert</option>
@@ -102,7 +102,7 @@ export default function SettingsPanel({
                             <select
                                 value={formData.length}
                                 onChange={(e) => setFormData({ ...formData, length: e.target.value })}
-                                className="w-full px-3 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none text-sm appearance-none cursor-pointer"
+                                className="w-full px-3 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none text-sm appearance-none cursor-pointer rounded-sm"
                             >
                                 <option>150 mots (Fiche produit)</option>
                                 <option>500 mots</option>
@@ -121,7 +121,7 @@ export default function SettingsPanel({
                     <textarea
                         value={formData.brief}
                         onChange={(e) => setFormData({ ...formData, brief: e.target.value })}
-                        className="w-full px-3 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none min-h-[80px] text-sm resize-none"
+                        className="w-full px-3 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none min-h-[80px] text-sm resize-none rounded-sm"
                         placeholder="Ex: Texte destiné aux RH..."
                     />
                 </div>
@@ -134,7 +134,7 @@ export default function SettingsPanel({
                             id="genImage"
                             checked={formData.generateImage}
                             onChange={(e) => setFormData({ ...formData, generateImage: e.target.checked })}
-                            className="peer h-4 w-4 cursor-pointer appearance-none border border-[#E5E5E5] bg-white checked:bg-black checked:border-black transition-all"
+                            className="peer h-4 w-4 cursor-pointer appearance-none border border-[#E5E5E5] bg-white checked:bg-black checked:border-black transition-all rounded-[3px]"
                         />
                         <Check className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100" />
                     </div>
@@ -169,7 +169,7 @@ export default function SettingsPanel({
                     {isGenerating && (
                         <button
                             onClick={handleStop}
-                            className="w-full py-2 px-4 flex items-center justify-center gap-2 font-medium text-xs text-[#FF0000] bg-red-50 border border-red-100 hover:bg-red-100 transition-colors"
+                            className="w-full py-2 px-4 flex items-center justify-center gap-2 font-medium text-xs text-[#FF0000] bg-red-50 border border-red-100 hover:bg-red-100 transition-colors rounded-sm"
                         >
                             <XCircle className="w-3.5 h-3.5" />
                             Arrêter

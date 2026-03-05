@@ -28,7 +28,7 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
-            <div className="bg-white border border-[#E5E5E5] p-8 w-full max-w-md relative z-10">
+            <div className="bg-white border border-[#E5E5E5] p-8 w-full max-w-md relative z-10 rounded">
                 <div className="flex flex-col items-center mb-8">
                     <span className="font-bold text-2xl tracking-[0.2em] text-black uppercase mb-2">GRADUATE</span>
                     <div className="w-12 h-[1px] bg-black mb-4"></div>
@@ -45,7 +45,7 @@ export default function LoginPage() {
                                 value={token}
                                 onChange={(e) => setToken(e.target.value)}
                                 placeholder="••••••••••••••••••••••••••"
-                                className="w-full pl-10 pr-4 py-3 bg-[#F5F5F5] border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all placeholder:text-[#999] text-black"
+                                className="w-full pl-10 pr-4 py-3 bg-[#F5F5F5] border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all placeholder:text-[#999] text-black rounded-sm"
                                 required
                             />
                         </div>
@@ -54,7 +54,7 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full py-3.5 px-4 flex items-center justify-center gap-2 font-semibold text-sm transition-all bg-black text-white hover:bg-[#333] uppercase tracking-widest disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="w-full py-3.5 px-4 flex items-center justify-center gap-2 font-semibold text-sm transition-all bg-black text-white hover:bg-[#333] uppercase tracking-widest disabled:opacity-70 disabled:cursor-not-allowed rounded-sm"
                     >
                         {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Accéder <ChevronRight className="w-5 h-5" /></>}
                     </button>

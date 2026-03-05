@@ -20,7 +20,10 @@ module.exports = {
             },
             borderRadius: {
                 none: '0',
-                sm: '2px',
+                sm: '4px',
+                DEFAULT: '6px',
+                md: '6px',
+                lg: '8px',
             },
         },
     },

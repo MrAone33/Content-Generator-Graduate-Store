@@ -25,7 +25,7 @@ export default function LinksList({ links, setLinks }) {
                 <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wider ml-1">Liens à intégrer</label>
                 <button
                     onClick={handleAddLink}
-                    className="text-xs flex items-center gap-1 text-black hover:text-[#333] font-semibold transition-colors bg-[#F5F5F5] px-2 py-0.5 hover:bg-[#E5E5E5] uppercase tracking-wide"
+                    className="text-xs flex items-center gap-1 text-black hover:text-[#333] font-semibold transition-colors bg-[#F5F5F5] px-2 py-0.5 hover:bg-[#E5E5E5] uppercase tracking-wide rounded-sm"
                 >
                     <Plus className="w-3 h-3" /> Ajouter
                 </button>
@@ -33,11 +33,11 @@ export default function LinksList({ links, setLinks }) {
 
             <div className="space-y-3">
                 {links.map((link, index) => (
-                    <div key={index} className="grid grid-cols-1 gap-2 p-3 bg-[#F5F5F5] border border-[#E5E5E5] relative group">
+                    <div key={index} className="grid grid-cols-1 gap-2 p-3 bg-[#F5F5F5] border border-[#E5E5E5] relative group rounded">
                         {links.length > 1 && (
                             <button
                                 onClick={() => handleRemoveLink(index)}
-                                className="absolute right-2 top-2 p-1 text-[#767676] hover:text-[#FF0000] hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                className="absolute right-2 top-2 p-1 text-[#767676] hover:text-[#FF0000] hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100 rounded-sm"
                                 title="Supprimer ce lien"
                             >
                                 <Trash2 className="w-3 h-3" />
@@ -51,7 +51,7 @@ export default function LinksList({ links, setLinks }) {
                                     type="text"
                                     value={link.anchor}
                                     onChange={(e) => handleLinkChange(index, 'anchor', e.target.value)}
-                                    className="w-full pl-8 pr-4 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all placeholder:text-[#999] text-xs text-black"
+                                    className="w-full pl-8 pr-4 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all placeholder:text-[#999] text-xs text-black rounded-sm"
                                     placeholder="Ex: meilleur outil"
                                 />
                             </div>
@@ -64,7 +64,7 @@ export default function LinksList({ links, setLinks }) {
                                     type="text"
                                     value={link.url}
                                     onChange={(e) => handleLinkChange(index, 'url', e.target.value)}
-                                    className="w-full pl-8 pr-4 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all placeholder:text-[#999] text-xs text-black"
+                                    className="w-full pl-8 pr-4 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all placeholder:text-[#999] text-xs text-black rounded-sm"
                                     placeholder="Ex: https://..."
                                 />
                             </div>
