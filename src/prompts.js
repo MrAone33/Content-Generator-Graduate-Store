@@ -69,6 +69,13 @@ But : capter la demande "marque" + devenir un hub qui distribue vers catégories
   return guidelines[contentType] || guidelines.cocon;
 }
 
+function getToneInstruction(tone) {
+  if (tone === 'graduate') {
+    return `Ton : Graduate Store — Curateur exigeant, expert accessible, premium sobre. Vouvoiement, "nous" = Graduate, "vous" = le client. Phrases courtes, rythmiques, posées. Lexique signature : "sélection", "pièces", "vestiaire", "allure", "finitions", "matières", "durable", "fonctionnel". Formules : "notre conseil…", "on privilégie…", "selon votre usage…". Aucun superlatif non prouvé, aucun ton promo agressif.`;
+  }
+  return `Ton demandé : ${tone} — Applique ce ton tout en conservant l'identité Graduate Store (vouvoiement, "nous" = Graduate, sobriété, pas de superlatifs non prouvés, pas de ton promo agressif).`;
+}
+
 export function buildArticlePrompt({ keyword, tone, brief, url, anchor, context, length, includeAuthorityLink, contentType }) {
   // Logic for Authority Link (Automatic)
   const authorityLinkInstruction = includeAuthorityLink
@@ -101,7 +108,7 @@ ${context}
 
 ## INFOS UTILISATEUR :
 - Mot-clé : “${keyword}”
-- Ton : ${tone}
+- ${getToneInstruction(tone)}
 - Longueur cible : ${length}
 - Brief : ${brief}
 ${userLinkSection}
@@ -200,7 +207,7 @@ ${initialContent}
 
 ## INFOS UTILISATEUR :
 - Mot-clé : “${keyword}”
-- Ton : ${tone}
+- ${getToneInstruction(tone)}
 - Longueur cible : ${length}
 - Brief : ${brief}
 ${userLinkSection}

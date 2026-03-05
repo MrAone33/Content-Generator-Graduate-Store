@@ -86,6 +86,7 @@ export default function SettingsPanel({
                                 onChange={(e) => setFormData({ ...formData, tone: e.target.value })}
                                 className="w-full px-3 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none text-sm appearance-none cursor-pointer"
                             >
+                                <option value="graduate">Graduate (Auto)</option>
                                 <option value="expert">Expert</option>
                                 <option value="pedagogique">Pédagogique</option>
                                 <option value="journalistique">Journalistique</option>

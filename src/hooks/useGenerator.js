@@ -11,7 +11,7 @@ export function useGenerator() {
         contentType: 'cocon',
         length: '800 mots',
         links: [{ anchor: '', url: '' }],
-        tone: 'expert',
+        tone: 'graduate',
         brief: '',
         generateImage: true,
         includeAuthorityLink: false, // Default false
