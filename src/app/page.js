@@ -25,7 +25,7 @@ export default function SeoGeneratorApp() {
     } = useGenerator();
 
     return (
-        <div className="h-screen overflow-hidden bg-[--color-surface] flex">
+        <div className="h-screen overflow-hidden bg-white flex">
             {/* Sidebar */}
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
@@ -34,7 +34,7 @@ export default function SeoGeneratorApp() {
                 <Header activeTab={activeTab} handleLogout={handleLogout} />
 
                 {/* Content */}
-                <main className="flex-1 p-8 overflow-y-auto custom-scrollbar">
+                <main className="flex-1 p-8 overflow-y-auto custom-scrollbar bg-[#F5F5F5]">
                     {activeTab === 'text' && (
                         <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10">
                             {/* LEFT COLUMN: Input Form */}
@@ -65,12 +65,12 @@ export default function SeoGeneratorApp() {
                         <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10">
                             {/* LEFT COLUMN: Input Form */}
                             <div className="lg:col-span-4 space-y-6">
-                                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
-                                    <h3 className="text-lg font-semibold text-gray-800">Paramètres Image</h3>
+                                <div className="bg-white p-6 border border-[#E5E5E5] space-y-6">
+                                    <h3 className="text-lg font-semibold text-black uppercase tracking-wide">Paramètres Image</h3>
 
-                                    {/* Keyword Input (Shared) - Disabled in Mockup mode */}
+                                    {/* Keyword Input */}
                                     <div className={formData.isMockup ? 'opacity-50' : ''}>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide mb-1">
                                             Sujet / Mot-clé
                                         </label>
                                         <input
@@ -78,29 +78,29 @@ export default function SeoGeneratorApp() {
                                             value={formData.keyword}
                                             onChange={(e) => setFormData({ ...formData, keyword: e.target.value })}
                                             disabled={formData.isMockup}
-                                            className={`w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all ${formData.isMockup ? 'cursor-not-allowed bg-gray-100' : ''}`}
+                                            className={`w-full px-4 py-2 border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all ${formData.isMockup ? 'cursor-not-allowed bg-[#F5F5F5]' : ''}`}
                                             placeholder="Ex: Un café à Paris..."
                                         />
                                     </div>
 
-                                    {/* Supplemental Prompt - Disabled in Mockup mode */}
+                                    {/* Supplemental Prompt */}
                                     <div className={formData.isMockup ? 'opacity-50' : ''}>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide mb-1">
                                             Complément de prompt (Optionnel)
                                         </label>
-                                        <p className="text-xs text-gray-500 mb-2">Utilisez <code>{`{keyword}`}</code> pour insérer le sujet dynamiquement.</p>
+                                        <p className="text-xs text-[#767676] mb-2">Utilisez <code className="font-mono bg-[#F5F5F5] px-1">{`{keyword}`}</code> pour insérer le sujet dynamiquement.</p>
                                         <textarea
                                             value={formData.imagePrompt}
                                             onChange={(e) => setFormData({ ...formData, imagePrompt: e.target.value })}
                                             disabled={formData.isMockup}
-                                            className={`w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all h-32 resize-none ${formData.isMockup ? 'cursor-not-allowed bg-gray-100' : ''}`}
+                                            className={`w-full px-4 py-2 border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none transition-all h-32 resize-none ${formData.isMockup ? 'cursor-not-allowed bg-[#F5F5F5]' : ''}`}
                                             placeholder="Ex: Style cyberpunk, {keyword} sous la pluie..."
                                         />
                                     </div>
 
-                                    {/* Format Selection - Disabled in Mockup mode */}
+                                    {/* Format Selection */}
                                     <div className={formData.isMockup ? 'opacity-50' : ''}>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide mb-2">
                                             Format
                                         </label>
                                         <div className="grid grid-cols-3 gap-2">
@@ -113,9 +113,9 @@ export default function SeoGeneratorApp() {
                                                     key={format.id}
                                                     onClick={() => !formData.isMockup && setFormData({ ...formData, imageFormat: format.id })}
                                                     disabled={formData.isMockup}
-                                                    className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all ${formData.isMockup ? 'cursor-not-allowed' : ''} ${formData.imageFormat === format.id
-                                                        ? 'bg-blue-50 border-blue-200 text-blue-700'
-                                                        : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                                                    className={`px-3 py-2 border text-sm font-medium transition-all ${formData.isMockup ? 'cursor-not-allowed' : ''} ${formData.imageFormat === format.id
+                                                        ? 'bg-black border-black text-white'
+                                                        : 'bg-white border-[#E5E5E5] text-[#767676] hover:bg-[#F5F5F5]'
                                                         }`}
                                                 >
                                                     <span className="block text-lg mb-1">{format.icon}</span>
@@ -126,25 +126,24 @@ export default function SeoGeneratorApp() {
                                     </div>
 
                                     {/* Mockup Generation Option */}
-                                    <div className="pt-4 border-t border-gray-100">
+                                    <div className="pt-4 border-t border-[#E5E5E5]">
                                         <div className="flex items-center gap-3 mb-4">
                                             <input
                                                 type="checkbox"
                                                 id="isMockup"
                                                 checked={formData.isMockup}
                                                 onChange={(e) => setFormData({ ...formData, isMockup: e.target.checked })}
-                                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                className="h-4 w-4 border-[#E5E5E5] text-black focus:ring-black cursor-pointer accent-black"
                                             />
-                                            <label htmlFor="isMockup" className="text-sm font-medium text-gray-800 cursor-pointer select-none">
+                                            <label htmlFor="isMockup" className="text-sm font-medium text-black cursor-pointer select-none">
                                                 Génération de Mockup
                                             </label>
                                         </div>
 
                                         {formData.isMockup && (
-                                            <div className="space-y-4 pl-7 animate-in fade-in slide-in-from-top-2 duration-200">
-                                                {/* Base Image Upload */}
+                                            <div className="space-y-4 pl-7">
                                                 <div>
-                                                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                    <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide mb-1">
                                                         Image de base (Vêtement/Objet)
                                                     </label>
                                                     <input
@@ -156,19 +155,18 @@ export default function SeoGeneratorApp() {
                                                                 setFormData(prev => ({ ...prev, mockupBaseImage: file }));
                                                             }
                                                         }}
-                                                        className="block w-full text-xs text-gray-500
+                                                        className="block w-full text-xs text-[#767676]
                                                             file:mr-4 file:py-2 file:px-4
-                                                            file:rounded-md file:border-0
+                                                            file:border file:border-[#E5E5E5]
                                                             file:text-xs file:font-semibold
-                                                            file:bg-blue-50 file:text-blue-700
-                                                            hover:file:bg-blue-100
+                                                            file:bg-[#F5F5F5] file:text-black
+                                                            hover:file:bg-[#E5E5E5]
                                                         "
                                                     />
                                                 </div>
 
-                                                {/* Logo Upload */}
                                                 <div>
-                                                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                    <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide mb-1">
                                                         Logo à appliquer
                                                     </label>
                                                     <input
@@ -180,20 +178,19 @@ export default function SeoGeneratorApp() {
                                                                 setFormData(prev => ({ ...prev, mockupLogoImage: file }));
                                                             }
                                                         }}
-                                                        className="block w-full text-xs text-gray-500
+                                                        className="block w-full text-xs text-[#767676]
                                                             file:mr-4 file:py-2 file:px-4
-                                                            file:rounded-md file:border-0
+                                                            file:border file:border-[#E5E5E5]
                                                             file:text-xs file:font-semibold
-                                                            file:bg-purple-50 file:text-purple-700
-                                                            hover:file:bg-purple-100
+                                                            file:bg-[#F5F5F5] file:text-black
+                                                            hover:file:bg-[#E5E5E5]
                                                         "
                                                     />
                                                 </div>
 
-                                                {/* Mockup Parameters */}
                                                 <div className="grid grid-cols-1 gap-3">
                                                     <div>
-                                                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                        <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide mb-1">
                                                             Emplacement
                                                         </label>
                                                         <input
@@ -201,12 +198,12 @@ export default function SeoGeneratorApp() {
                                                             value={formData.mockupLocation}
                                                             onChange={(e) => setFormData({ ...formData, mockupLocation: e.target.value })}
                                                             placeholder="Ex: Cœur, Dos, Manche..."
-                                                            className="w-full px-3 py-2 text-sm rounded-md border border-gray-200 focus:ring-1 focus:ring-blue-500 outline-none"
+                                                            className="w-full px-3 py-2 text-sm border border-[#E5E5E5] focus:ring-1 focus:ring-black outline-none"
                                                         />
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-3">
                                                         <div>
-                                                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                            <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide mb-1">
                                                                 Taille
                                                             </label>
                                                             <input
@@ -214,11 +211,11 @@ export default function SeoGeneratorApp() {
                                                                 value={formData.mockupSize}
                                                                 onChange={(e) => setFormData({ ...formData, mockupSize: e.target.value })}
                                                                 placeholder="Ex: 10cm, Large..."
-                                                                className="w-full px-3 py-2 text-sm rounded-md border border-gray-200 focus:ring-1 focus:ring-blue-500 outline-none"
+                                                                className="w-full px-3 py-2 text-sm border border-[#E5E5E5] focus:ring-1 focus:ring-black outline-none"
                                                             />
                                                         </div>
                                                         <div>
-                                                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                            <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide mb-1">
                                                                 Alignement
                                                             </label>
                                                             <input
@@ -226,7 +223,7 @@ export default function SeoGeneratorApp() {
                                                                 value={formData.mockupAlignment}
                                                                 onChange={(e) => setFormData({ ...formData, mockupAlignment: e.target.value })}
                                                                 placeholder="Ex: Centré, Haut..."
-                                                                className="w-full px-3 py-2 text-sm rounded-md border border-gray-200 focus:ring-1 focus:ring-blue-500 outline-none"
+                                                                className="w-full px-3 py-2 text-sm border border-[#E5E5E5] focus:ring-1 focus:ring-black outline-none"
                                                             />
                                                         </div>
                                                     </div>
@@ -239,9 +236,9 @@ export default function SeoGeneratorApp() {
                                     <button
                                         onClick={() => handleGenerate('image')}
                                         disabled={isGenerating || (formData.isMockup ? (!formData.mockupBaseImage || !formData.mockupLogoImage) : !formData.keyword)}
-                                        className={`w-full py-3 rounded-lg font-medium text-white transition-all shadow-md hover:shadow-lg ${isGenerating || (formData.isMockup ? (!formData.mockupBaseImage || !formData.mockupLogoImage) : !formData.keyword)
-                                            ? 'bg-gray-300 cursor-not-allowed'
-                                            : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700'
+                                        className={`w-full py-3 font-semibold text-white transition-all uppercase tracking-wider ${isGenerating || (formData.isMockup ? (!formData.mockupBaseImage || !formData.mockupLogoImage) : !formData.keyword)
+                                            ? 'bg-[#E5E5E5] text-[#999] cursor-not-allowed'
+                                            : 'bg-black hover:bg-[#333]'
                                             }`}
                                     >
                                         {isGenerating ? (
@@ -263,31 +260,31 @@ export default function SeoGeneratorApp() {
                             {/* RIGHT COLUMN: Output */}
                             <div className="lg:col-span-8 flex flex-col h-full min-h-[600px]">
                                 {generatedImageUrl ? (
-                                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-fit">
-                                        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                                            <h3 className="font-semibold text-gray-700">Résultat</h3>
+                                    <div className="bg-white border border-[#E5E5E5] overflow-hidden h-fit">
+                                        <div className="p-4 border-b border-[#E5E5E5] flex justify-between items-center bg-[#F5F5F5]">
+                                            <h3 className="font-semibold text-black uppercase tracking-wide">Résultat</h3>
                                             <a
                                                 href={generatedImageUrl}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                                                className="text-sm text-black hover:text-[#333] font-semibold underline underline-offset-2"
                                             >
                                                 Télécharger Original
                                             </a>
                                         </div>
-                                        <div className="p-6 flex items-center justify-center bg-gray-100/50 min-h-[400px]">
+                                        <div className="p-6 flex items-center justify-center bg-[#F5F5F5] min-h-[400px]">
                                             <img
                                                 src={generatedImageUrl}
                                                 alt="Generated"
-                                                className="max-w-full h-auto rounded-lg shadow-lg object-contain max-h-[700px]"
+                                                className="max-w-full h-auto object-contain max-h-[700px]"
                                             />
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="flex-1 bg-white/50 border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center text-gray-400">
+                                    <div className="flex-1 bg-white border border-dashed border-[#E5E5E5] flex items-center justify-center text-[#767676]">
                                         <div className="text-center">
-                                            <span className="text-4xl block mb-2 opacity-50">🖼️</span>
-                                            <p>L'image générée apparaîtra ici</p>
+                                            <span className="text-4xl block mb-2 opacity-30">&#9634;</span>
+                                            <p className="text-sm">L'image générée apparaîtra ici</p>
                                         </div>
                                     </div>
                                 )}

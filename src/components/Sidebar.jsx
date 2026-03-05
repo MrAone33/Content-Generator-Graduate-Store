@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Image, Settings, Sparkles, LayoutDashboard } from 'lucide-react';
+import { FileText, Image, Settings, LayoutDashboard } from 'lucide-react';
 
 export default function Sidebar({ activeTab, setActiveTab }) {
     const menuItems = [
@@ -8,27 +8,22 @@ export default function Sidebar({ activeTab, setActiveTab }) {
     ];
 
     return (
-        <aside className="w-72 bg-[var(--color-sidebar)] h-screen flex flex-col text-[#111827] flex-shrink-0 font-sans sticky top-0 border-r border-gray-200">
+        <aside className="w-72 bg-white h-screen flex flex-col text-black flex-shrink-0 font-sans sticky top-0 border-r border-[#E5E5E5]">
             {/* Logo area */}
-            <div className="px-6 h-20 flex items-center border-b border-gray-100 flex-shrink-0">
-                <div className="flex items-center gap-3">
-                    <div className="bg-[var(--color-primary)] p-1.5 rounded-lg">
-                        <Sparkles className="w-5 h-5 text-white" />
-                    </div>
-                    <span className="font-bold text-base tracking-tight text-[#111827]">Content Generator</span>
-                </div>
+            <div className="px-6 h-20 flex items-center border-b border-[#E5E5E5] flex-shrink-0">
+                <span className="font-bold text-lg tracking-[0.15em] text-black uppercase">GRADUATE</span>
             </div>
 
             {/* Main Navigation */}
             <div className="px-4 py-6 flex-1 overflow-y-auto custom-scrollbar">
-                <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:text-[#111827] mb-8 transition-colors text-left group">
-                    <LayoutDashboard className="w-4 h-4 text-gray-400 group-hover:text-[#111827] transition-colors" />
+                <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[#767676] hover:text-black mb-8 transition-colors text-left group">
+                    <LayoutDashboard className="w-4 h-4 text-[#767676] group-hover:text-black transition-colors" />
                     Tableau de bord
                 </button>
 
                 <div className="space-y-6">
                     <div>
-                        <h3 className="px-4 text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">
+                        <h3 className="px-4 text-[11px] font-semibold text-[#767676] uppercase tracking-widest mb-2">
                             TOOLS
                         </h3>
                         <ul className="space-y-1">
@@ -39,12 +34,12 @@ export default function Sidebar({ activeTab, setActiveTab }) {
                                     <li key={item.id}>
                                         <button
                                             onClick={() => setActiveTab(item.id)}
-                                            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-[13px] font-medium transition-all ${isActive
-                                                ? 'text-[--color-secondary]'
-                                                : 'text-gray-500 hover:text-[#111827]'
+                                            className={`w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium transition-all ${isActive
+                                                ? 'text-black bg-[#F5F5F5] border-l-2 border-black'
+                                                : 'text-[#767676] hover:text-black hover:bg-[#F5F5F5]'
                                                 }`}
                                         >
-                                            <Icon className={`w-4 h-4 ${isActive ? 'text-[--color-secondary]' : 'text-gray-400'}`} />
+                                            <Icon className={`w-4 h-4 ${isActive ? 'text-black' : 'text-[#767676]'}`} />
                                             {item.label}
                                         </button>
                                     </li>
@@ -56,13 +51,13 @@ export default function Sidebar({ activeTab, setActiveTab }) {
             </div>
 
             {/* Bottom section */}
-            <div className="mt-auto p-4 border-t border-gray-100 bg-gray-50/50 flex-shrink-0">
-                <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-[13px] font-medium text-gray-500 hover:text-[#111827] transition-all">
+            <div className="mt-auto p-4 border-t border-[#E5E5E5] bg-[#F5F5F5]/50 flex-shrink-0">
+                <button className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium text-[#767676] hover:text-black transition-all">
                     <Settings className="w-4 h-4" />
                     Paramètres
                 </button>
-                <div className="mt-4 px-4 text-[10px] text-gray-400 font-medium tracking-wide uppercase">
-                    Edited by Arthur Comets<br />v1.0.2
+                <div className="mt-4 px-4 text-[10px] text-[#999] font-medium tracking-wide uppercase">
+                    Graduate Store<br />v1.0.2
                 </div>
             </div>
         </aside>
