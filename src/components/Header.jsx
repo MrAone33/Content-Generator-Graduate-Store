@@ -1,6 +1,6 @@
 import { LogOut } from 'lucide-react';
 
-export default function Header({ activeTab, handleLogout, language, setLanguage }) {
+export default function Header({ activeTab, handleLogout }) {
     const title = activeTab === 'text' ? 'Génération de textes' : 'Génération d\'image';
     const subtitle = activeTab === 'text' ? 'Vue d\'ensemble du générateur' : 'Création d\'images via IA';
 
@@ -17,22 +17,6 @@ export default function Header({ activeTab, handleLogout, language, setLanguage 
                 </div>
 
                 <div className="flex items-center gap-4">
-                    {/* Language Toggle */}
-                    <div className="flex items-center bg-[#F5F5F5] border border-[#E5E5E5] rounded-sm overflow-hidden">
-                        <button
-                            onClick={() => setLanguage('fr')}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition-all ${language === 'fr' ? 'bg-black text-white' : 'text-[#767676] hover:bg-[#E5E5E5]'}`}
-                        >
-                            <span className="text-sm">🇫🇷</span> FR
-                        </button>
-                        <button
-                            onClick={() => setLanguage('en')}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition-all ${language === 'en' ? 'bg-black text-white' : 'text-[#767676] hover:bg-[#E5E5E5]'}`}
-                        >
-                            <span className="text-sm">🇬🇧</span> EN
-                        </button>
-                    </div>
-
                     <button
                         onClick={handleLogout}
                         className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-black text-white hover:bg-[#333] transition-all uppercase tracking-wider rounded-sm"

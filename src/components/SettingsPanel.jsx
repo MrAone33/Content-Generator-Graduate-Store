@@ -18,6 +18,27 @@ export default function SettingsPanel({
             </div>
 
             <div className="p-5 space-y-4">
+                {/* Language */}
+                <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide">
+                        Langue
+                    </label>
+                    <div className="flex bg-[#F5F5F5] border border-[#E5E5E5] rounded-sm overflow-hidden">
+                        <button
+                            onClick={() => setFormData({ ...formData, language: 'fr' })}
+                            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold transition-all ${formData.language === 'fr' ? 'bg-black text-white' : 'text-[#767676] hover:bg-[#E5E5E5]'}`}
+                        >
+                            <span className="text-sm">🇫🇷</span> Français
+                        </button>
+                        <button
+                            onClick={() => setFormData({ ...formData, language: 'en' })}
+                            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold transition-all ${formData.language === 'en' ? 'bg-black text-white' : 'text-[#767676] hover:bg-[#E5E5E5]'}`}
+                        >
+                            <span className="text-sm">🇬🇧</span> English
+                        </button>
+                    </div>
+                </div>
+
                 {/* Content Type */}
                 <div className="space-y-1.5">
                     <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide">

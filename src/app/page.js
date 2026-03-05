@@ -31,12 +31,7 @@ export default function SeoGeneratorApp() {
 
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-                <Header
-                    activeTab={activeTab}
-                    handleLogout={handleLogout}
-                    language={formData.language}
-                    setLanguage={(lang) => setFormData(prev => ({ ...prev, language: lang }))}
-                />
+                <Header activeTab={activeTab} handleLogout={handleLogout} />
 
                 {/* Content */}
                 <main className="flex-1 p-8 overflow-y-auto custom-scrollbar bg-[#F5F5F5]">
