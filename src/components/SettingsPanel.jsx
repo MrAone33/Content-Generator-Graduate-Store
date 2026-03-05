@@ -23,23 +23,17 @@ export default function SettingsPanel({
                     <label className="block text-xs font-semibold text-[#767676] uppercase tracking-wide">
                         Type de contenu
                     </label>
-                    <div className="grid grid-cols-3 gap-2">
-                        {[
-                            { id: 'cocon', label: 'Article Cocon' },
-                            { id: 'categorie', label: 'Catégorie Ecom' },
-                            { id: 'marque', label: 'Marque Ecom' },
-                        ].map((type) => (
-                            <button
-                                key={type.id}
-                                onClick={() => setFormData({ ...formData, contentType: type.id })}
-                                className={`px-3 py-2 text-xs font-semibold transition-all uppercase tracking-wide border ${formData.contentType === type.id
-                                    ? 'bg-black border-black text-white'
-                                    : 'bg-white border-[#E5E5E5] text-[#767676] hover:bg-[#F5F5F5]'
-                                    }`}
-                            >
-                                {type.label}
-                            </button>
-                        ))}
+                    <div className="relative">
+                        <select
+                            value={formData.contentType}
+                            onChange={(e) => setFormData({ ...formData, contentType: e.target.value })}
+                            className="w-full px-3 py-2 bg-white border border-[#E5E5E5] focus:ring-1 focus:ring-black focus:border-black outline-none text-sm appearance-none cursor-pointer"
+                        >
+                            <option value="cocon">Article Cocon</option>
+                            <option value="categorie">Catégorie Ecom</option>
+                            <option value="marque">Marque Ecom</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 text-[#767676] pointer-events-none" />
                     </div>
                 </div>
 
