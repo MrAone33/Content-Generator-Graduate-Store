@@ -1,8 +1,12 @@
 import { LogOut } from 'lucide-react';
 
 export default function Header({ activeTab, handleLogout }) {
-    const title = activeTab === 'text' ? 'Génération de textes' : 'Génération d\'image';
-    const subtitle = activeTab === 'text' ? 'Vue d\'ensemble du générateur' : 'Création d\'images via IA';
+    const titles = {
+        text: ['Génération de textes', 'Vue d\'ensemble du générateur'],
+        image: ['Génération d\'image', 'Création d\'images via IA'],
+        chat: ['Chat', 'Discutez avec Claude'],
+    };
+    const [title, subtitle] = titles[activeTab] || titles.text;
 
     return (
         <header className="bg-white sticky top-0 z-10 border-b border-[#E5E5E5]">

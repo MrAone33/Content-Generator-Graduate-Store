@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import SettingsPanel from '../components/SettingsPanel';
 import TerminalLogs from '../components/TerminalLogs';
 import ResultView from '../components/ResultView';
+import ChatPanel from '../components/ChatPanel';
 import { useGenerator } from '../hooks/useGenerator';
 
 export default function SeoGeneratorApp() {
@@ -290,6 +291,10 @@ export default function SeoGeneratorApp() {
                                 )}
                             </div>
                         </div>
+                    )}
+
+                    {activeTab === 'chat' && (
+                        <ChatPanel settings={settings} />
                     )}
                 </main>
             </div>

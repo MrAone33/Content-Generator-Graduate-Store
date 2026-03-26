@@ -1,10 +1,11 @@
 import React from 'react';
-import { FileText, Image, Settings } from 'lucide-react';
+import { FileText, Image, MessageCircle, Settings } from 'lucide-react';
 
 export default function Sidebar({ activeTab, setActiveTab }) {
     const menuItems = [
         { id: 'text', label: 'Génération de textes', icon: FileText },
         { id: 'image', label: 'Génération d\'image', icon: Image },
+        { id: 'chat', label: 'Chat', icon: MessageCircle },
     ];
 
     return (
