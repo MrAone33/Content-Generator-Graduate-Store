@@ -8,7 +8,7 @@ export async function POST(request) {
     try {
         const authHeader = request.headers.get('authorization');
         const token = authHeader?.replace('Bearer ', '');
-        if (!verifyToken(token)) {
+        if (!verifyToken(token, process.env.ACCESS_TOKEN)) {
             return NextResponse.json({ error: 'Non autorise' }, { status: 401 });
         }
 
