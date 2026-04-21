@@ -17,15 +17,7 @@ export function useGenerator() {
         generateImage: true,
         includeAuthorityLink: false, // Default false
         imagePrompt: '', // Supplemental prompt for image
-        imageFormat: 'landscape', // 'landscape', 'portrait', 'square'
-
-        // Mockup Generation Options
-        isMockup: false,
-        mockupBaseImage: null, // File object
-        mockupLogoImage: null, // File object
-        mockupLocation: '',
-        mockupSize: '',
-        mockupAlignment: ''
+        imageFormat: 'landscape' // 'landscape', 'portrait', 'square'
     });
 
     const [settings, setSettings] = useState({
@@ -108,27 +100,6 @@ export function useGenerator() {
                 anchor: formData.links[0]?.anchor || "",
                 url: formData.links[0]?.url || ""
             };
-
-            // Image conversions (Base64) logic preserved
-            if (activeTab === 'image' && formData.isMockup) {
-                const fileToBase64 = (file) => {
-                    return new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.readAsDataURL(file);
-                        reader.onload = () => resolve(reader.result);
-                        reader.onerror = error => reject(error);
-                    });
-                };
-                try {
-                    addLog("Conversion des images...", 'scrape', 'loading');
-                    if (formData.mockupBaseImage) payload.mockupBaseImageUrl = await fileToBase64(formData.mockupBaseImage);
-                    if (formData.mockupLogoImage) payload.mockupLogoImageUrl = await fileToBase64(formData.mockupLogoImage);
-                    delete payload.mockupBaseImage;
-                    delete payload.mockupLogoImage;
-                } catch (encError) {
-                    throw new Error("Erreur lecture images.");
-                }
-            }
 
             // -- NEW SEQUENTIAL FLOW --
 
