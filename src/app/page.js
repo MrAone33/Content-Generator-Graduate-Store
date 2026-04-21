@@ -40,7 +40,6 @@ export default function SeoGeneratorApp() {
                         <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10">
                             {/* LEFT COLUMN: Input Form */}
                             <div className="lg:col-span-4 space-y-6">
-                                <CostOverview />
                                 <SettingsPanel
                                     formData={formData}
                                     setFormData={setFormData}
@@ -184,6 +183,11 @@ export default function SeoGeneratorApp() {
                         </div>
                     )}
 
+                    {activeTab === 'costs' && (
+                        <div className="max-w-[900px] mx-auto pb-10">
+                            <CostOverview />
+                        </div>
+                    )}
                 </main>
             </div>
         </div>
