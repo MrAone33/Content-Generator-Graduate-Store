@@ -1,10 +1,11 @@
 import React from 'react';
-import { FileText, Image, DollarSign, Settings } from 'lucide-react';
+import { FileText, Image, DollarSign, Settings, History } from 'lucide-react';
 
 export default function Sidebar({ activeTab, setActiveTab }) {
     const menuItems = [
         { id: 'text', label: 'Génération de textes', icon: FileText },
         { id: 'image', label: 'Génération d\'image', icon: Image },
+        { id: 'history', label: 'Historique', icon: History },
         { id: 'costs', label: 'Coûts & Projections', icon: DollarSign },
     ];
 

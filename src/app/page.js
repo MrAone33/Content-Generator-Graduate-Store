@@ -7,6 +7,7 @@ import CostOverview from '../components/CostOverview';
 import SettingsPanel from '../components/SettingsPanel';
 import TerminalLogs from '../components/TerminalLogs';
 import ResultView from '../components/ResultView';
+import HistoryView from '../components/HistoryView';
 import { useGenerator } from '../hooks/useGenerator';
 
 export default function SeoGeneratorApp() {
@@ -16,14 +17,32 @@ export default function SeoGeneratorApp() {
         formData, setFormData,
         settings, setSettings,
         isGenerating,
-        generatedContent,
-        generatedImageUrl,
+        generatedContent, setGeneratedContent,
+        generatedImageUrl, setGeneratedImageUrl,
         logs,
         errorMsg,
         handleGenerate,
         handleStop,
         handleLogout
     } = useGenerator();
+
+    const handleLoadHistoryEntry = (entry) => {
+        if (!entry) return;
+        if (entry.formData?.keyword !== undefined) {
+            setFormData(prev => ({ ...prev, ...entry.formData }));
+        } else if (entry.keyword) {
+            setFormData(prev => ({ ...prev, keyword: entry.keyword }));
+        }
+        if (entry.type === 'image') {
+            setGeneratedContent(null);
+            setGeneratedImageUrl(entry.imageUrl || null);
+            setActiveTab('image');
+        } else {
+            setGeneratedContent(entry.content || null);
+            setGeneratedImageUrl(entry.imageUrl || null);
+            setActiveTab('text');
+        }
+    };
 
     return (
         <div className="h-screen overflow-hidden bg-white flex">
@@ -180,6 +199,12 @@ export default function SeoGeneratorApp() {
                                     </div>
                                 )}
                             </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'history' && (
+                        <div className="max-w-[1100px] mx-auto pb-10">
+                            <HistoryView settings={settings} onLoadEntry={handleLoadHistoryEntry} />
                         </div>
                     )}
 

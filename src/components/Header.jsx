@@ -4,6 +4,8 @@ export default function Header({ activeTab, handleLogout }) {
     const titles = {
         text: ['Génération de textes', 'Vue d\'ensemble du générateur'],
         image: ['Génération d\'image', 'Création d\'images via IA'],
+        history: ['Historique', 'Générations des 7 derniers jours'],
+        costs: ['Coûts & Projections', 'Suivi de consommation'],
         chat: ['Chat', 'Discutez avec Claude'],
     };
     const [title, subtitle] = titles[activeTab] || titles.text;

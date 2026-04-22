@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { verifyToken } from '../../../../utils/auth';
 import { fetchSerpResults } from '../../../../services/serp';
 import { generateImagePrompt, generateImage } from '../../../../services/ai';
+import { checkAndIncrementDailyLimit, isHistoryEnabled } from '../../../../services/history';
 
 // Configure longer timeout for Vercel
 export const maxDuration = 60;
@@ -30,6 +31,7 @@ export async function POST(request) {
             keyword,
             imagePrompt,
             imageFormat,
+            generationType,
             // Mockup params
             isMockup,
             mockupLocation,
@@ -41,6 +43,20 @@ export async function POST(request) {
 
         if (!config.seedreamApiKey) {
             return NextResponse.json({ error: 'Clé API Seedream manquante' }, { status: 500 });
+        }
+
+        if (generationType === 'image' && isHistoryEnabled()) {
+            try {
+                const quota = await checkAndIncrementDailyLimit();
+                if (!quota.allowed) {
+                    return NextResponse.json(
+                        { error: `Limite quotidienne atteinte (${quota.limit} générations/jour). Réessayez demain.` },
+                        { status: 429 }
+                    );
+                }
+            } catch (quotaErr) {
+                console.error('⚠️ Erreur quota (non bloquant):', quotaErr);
+            }
         }
 
         let prompt = "";

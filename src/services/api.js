@@ -60,3 +60,44 @@ export async function generateImage(settings, formData, signal) {
 export async function generateContent(settings, formData, signal) {
     return callApi('/api/generate', settings, formData, signal);
 }
+
+async function callHistory(path, { method = 'GET', settings, body, signal } = {}) {
+    if (!settings?.apiToken) throw new Error("Token API manquant.");
+    const response = await fetch(path, {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${settings.apiToken}`
+        },
+        body: body ? JSON.stringify(body) : undefined,
+        signal
+    });
+    if (response.status === 401 || response.status === 403) {
+        throw new Error("Authentification refusée : Token invalide.");
+    }
+    if (!response.ok) {
+        let details = response.statusText;
+        try {
+            const data = await response.json();
+            if (data.error) details = data.error;
+        } catch (e) { }
+        throw new Error(`Erreur serveur (${response.status}): ${details}`);
+    }
+    return response.json();
+}
+
+export async function listHistory(settings, signal) {
+    return callHistory('/api/history', { settings, signal });
+}
+
+export async function getHistoryEntry(settings, id, signal) {
+    return callHistory(`/api/history/${encodeURIComponent(id)}`, { settings, signal });
+}
+
+export async function deleteHistoryEntry(settings, id, signal) {
+    return callHistory(`/api/history/${encodeURIComponent(id)}`, { method: 'DELETE', settings, signal });
+}
+
+export async function saveHistoryEntry(settings, entry, signal) {
+    return callHistory('/api/history', { method: 'POST', settings, body: entry, signal });
+}

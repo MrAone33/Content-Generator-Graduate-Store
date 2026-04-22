@@ -103,6 +103,9 @@ export function useGenerator() {
 
             // -- NEW SEQUENTIAL FLOW --
 
+            let finalContent = null;
+            let finalImageUrl = null;
+
             // 1. DRAFT (Text Only)
             if (activeTab === 'text') {
                 addLog("Phase 1/3 : Analyse du sujet et structuration...", 'scrape', 'loading');
@@ -115,6 +118,7 @@ export function useGenerator() {
                 console.log("[DEBUG CLIENT] Payload sent to Rewrite:", payload); // DEBUG
                 const rewriteData = await apiService.generateRewrite(settings, draftData.content, payload, signal);
                 setGeneratedContent(rewriteData.content);
+                finalContent = rewriteData.content;
                 addLog("Contenu finalisé et optimisé.", 'generate', 'success');
 
                 // 3. IMAGE (Optional)
@@ -124,6 +128,7 @@ export function useGenerator() {
                         const imageData = await apiService.generateImage(settings, payload, signal);
                         if (imageData.imageUrl) {
                             setGeneratedImageUrl(imageData.imageUrl);
+                            finalImageUrl = imageData.imageUrl;
                             addLog("Visuel généré avec succès.", 'format', 'success');
                         }
                     } catch (imgErr) {
@@ -138,7 +143,22 @@ export function useGenerator() {
                 addLog("Analyse de la demande visuelle...", 'scrape', 'loading');
                 const imageData = await apiService.generateImage(settings, payload, signal);
                 setGeneratedImageUrl(imageData.imageUrl);
+                finalImageUrl = imageData.imageUrl;
                 addLog("Visuel créé.", 'scrape', 'success');
+            }
+
+            if (finalContent || finalImageUrl) {
+                try {
+                    await apiService.saveHistoryEntry(settings, {
+                        type: activeTab,
+                        keyword: payload.keyword,
+                        content: finalContent,
+                        imageUrl: finalImageUrl,
+                        formData: payload,
+                    });
+                } catch (saveErr) {
+                    console.warn("Impossible de sauvegarder l'historique :", saveErr.message);
+                }
             }
 
         } catch (err) {

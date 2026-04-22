@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { verifyToken } from '../../../../utils/auth';
 import { fetchSerpResults } from '../../../../services/serp';
 import { generateArticle } from '../../../../services/ai';
+import { checkAndIncrementDailyLimit, isHistoryEnabled } from '../../../../services/history';
 
 // Configure longer timeout for Vercel
 export const maxDuration = 60;
@@ -42,6 +43,20 @@ export async function POST(request) {
 
         if (!keyword) {
             return NextResponse.json({ error: 'Mot-clé manquant' }, { status: 400 });
+        }
+
+        if (isHistoryEnabled()) {
+            try {
+                const quota = await checkAndIncrementDailyLimit();
+                if (!quota.allowed) {
+                    return NextResponse.json(
+                        { error: `Limite quotidienne atteinte (${quota.limit} générations/jour). Réessayez demain.` },
+                        { status: 429 }
+                    );
+                }
+            } catch (quotaErr) {
+                console.error('⚠️ Erreur quota (non bloquant):', quotaErr);
+            }
         }
 
         // 1️⃣ Fetch SERP context
